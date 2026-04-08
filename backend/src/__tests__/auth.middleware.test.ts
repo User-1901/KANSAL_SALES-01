@@ -42,7 +42,7 @@ function mockRes() {
 }
 
 function mockNext(): NextFunction & { called: boolean } {
-  const fn = ((): unknown => vi.fn())() as NextFunction & { called: boolean };
+  const fn = ((): unknown => vi.fn())() as unknown as NextFunction & { called: boolean };
   Object.defineProperty(fn, 'called', {
     get() {
       return (fn as ReturnType<typeof vi.fn>).mock.calls.length > 0;

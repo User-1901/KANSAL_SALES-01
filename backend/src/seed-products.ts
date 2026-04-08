@@ -32,7 +32,7 @@ for (const cat of categories) {
 // Get category IDs
 const catResult = await db.query('SELECT id, name FROM categories LIMIT 3');
 const catMap = Object.fromEntries(
-  catResult.rows.map((c: { id: string; name: string }) => [c.name, c.id])
+  (catResult.rows as Array<{ id: string; name: string }>).map((c) => [c.name, c.id])
 );
 
 // Sample products
