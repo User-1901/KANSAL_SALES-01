@@ -1,0 +1,16 @@
+{
+  "buildCommand": "npm run build:backend && npm run build:frontend",
+  "installCommand": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "PORT": "3000",
+    "NODE_ENV": "production",
+    "CLIENT_ORIGIN": "@client_origin",
+    "JWT_SECRET": "@jwt_secret",
+    "RAZORPAY_KEY_ID": "@razorpay_key_id",
+    "RAZORPAY_KEY_SECRET": "@razorpay_key_secret",
+    "EMAIL_SERVICE": "@email_service",
+    "EMAIL_USER": "@email_user",
+    "EMAIL_PASSWORD": "@email_password"
+  }
+}

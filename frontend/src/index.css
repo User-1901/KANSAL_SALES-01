@@ -1,0 +1,478 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   ZENITH ATELIER - PREMIUM CLOTHING BRAND DESIGN SYSTEM
+   Dark + Elegant Gold Theme - Modern Luxury Aesthetic for Premium Fashion
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── PRIMARY COLORS: Elegant Gold + Dark Theme ────────────────────────────── */
+  /* Gold: Premium, luxurious, high-end positioning */
+  --gold: #D4AF37;              /* Classic luxury gold */
+  --gold-dark: #AA8C2C;         /* Darker gold for accents */
+  --gold-light: #E8D7B8;        /* Light gold for subtle backgrounds */
+  --gold-pale: #F5F1E8;         /* Pale gold background */
+
+  /* Dark Theme: Professional, sophisticated, elegant */
+  --dark: #0F1419;              /* Almost pure black - main background */
+  --dark-secondary: #1A1E2E;    /* Dark gray-blue - secondary backgrounds */
+  --dark-tertiary: #252B3B;     /* Slightly lighter - cards, components */
+  
+  /* Neutral Colors: Complementary to dark theme */
+  --white: #FFFFFF;             /* Pure white - text, highlights */
+  --gray-50: #F9FAFB;           /* Very light gray - alternate backgrounds */
+  --gray-100: #F3F4F6;          /* Light gray */
+  --gray-200: #E5E7EB;          /* Medium light gray */
+  --gray-300: #D1D5DB;          /* Medium gray */
+  --gray-400: #9CA3AF;          /* Medium-dark gray */
+  --gray-500: #6B7280;          /* Dark gray - text on light bg */
+  --gray-600: #4B5563;          /* Very dark gray */
+  --light-text: #E8E9EC;        /* Light text for dark backgrounds */
+
+  /* STATUS COLORS: Alerts, messages ───────────────────────────────────────── */
+  --success: #10B981;           /* Success - green */
+  --success-light: #ECFDF5;     /* Success background */
+  --success-dark: #047857;      /* Success dark accent */
+  
+  --error: #FF6B6B;             /* Error - red */
+  --error-light: #FEE2E2;       /* Error background */
+  --error-dark: #DC2626;        /* Error dark accent */
+  
+  --warning: #F59E0B;           /* Warning - amber */
+  --warning-light: #FEFCE8;     /* Warning background */
+  
+  --info: #3B82F6;              /* Info - blue */
+  --info-light: #EFF6FF;        /* Info background */
+
+  /* SPACING & SHADOWS ───────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.40);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.50);
+  --shadow-inner: inset 0 2px 4px rgba(255,255,255,0.05);
+  
+  --radius: 12px;               /* Standard border radius */
+  --radius-sm: 8px;             /* Small border radius */
+  --radius-lg: 16px;            /* Large border radius */
+  --nav-height: 64px;           /* Navigation bar height */
+}
+
+/* ── GLOBAL RESET & TYPOGRAPHY ────────────────────────────────────────────── */
+*, *::before, *::after { 
+  box-sizing: border-box; 
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  
+  /* Dark theme defaults */
+  color: var(--light-text);
+  background: var(--dark);
+  line-height: 1.6;
+  
+  /* Smooth transitions for theme elements */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Links: Gold accent color for dark theme */
+a { 
+  color: var(--gold); 
+  text-decoration: none; 
+  transition: color 0.15s ease;
+}
+a:hover { 
+  color: var(--gold-light);
+  text-decoration: underline; 
+}
+
+button { 
+  cursor: pointer; 
+  font-family: inherit; 
+}
+
+input, textarea, select { 
+  font-family: inherit; 
+  font-size: 14px; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--white);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────────────────────────── */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+/* ── BUTTONS: Premium, elevated styling ────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Primary: Gold on dark - premium feel */
+.btn-primary { 
+  background: var(--gold); 
+  color: var(--dark);
+  font-weight: 700;
+}
+.btn-primary:hover { 
+  background: var(--gold-light); 
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 20px rgba(212,175,55,0.4);
+}
+
+/* Secondary: Subtle light gray border */
+.btn-secondary { 
+  background: transparent; 
+  color: var(--light-text); 
+  border: 2px solid var(--gray-400);
+}
+.btn-secondary:hover { 
+  background: var(--dark-tertiary);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Danger: Red alert */
+.btn-danger { 
+  background: var(--error); 
+  color: var(--white);
+}
+.btn-danger:hover { 
+  background: var(--error-dark);
+  box-shadow: 0 4px 12px rgba(255,107,107,0.3);
+}
+
+/* Outline: Gold border, transparent background */
+.btn-outline { 
+  background: transparent; 
+  color: var(--gold); 
+  border: 2px solid var(--gold);
+}
+.btn-outline:hover { 
+  background: rgba(212,175,55,0.1); 
+  box-shadow: 0 4px 12px rgba(212,175,55,0.2);
+}
+
+/* Disabled state */
+.btn:disabled { 
+  opacity: 0.4; 
+  cursor: not-allowed; 
+  transform: none !important; 
+  box-shadow: none !important; 
+}
+
+/* Size variants */
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+.btn-lg { padding: 14px 32px; font-size: 15px; }
+
+/* ── FORMS: Dark elegant styling ──────────────────────────────────────────── */
+.form-group { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  margin-bottom: 20px; 
+}
+
+.form-group label { 
+  font-size: 12px; 
+  font-weight: 700; 
+  color: var(--light-text); 
+  letter-spacing: 0.08em; 
+  text-transform: uppercase; 
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 12px 14px;
+  border: 1.5px solid var(--dark-tertiary);
+  border-radius: var(--radius-sm);
+  outline: none;
+  background: var(--dark-secondary);
+  color: var(--white);
+  transition: all 0.2s ease;
+  font-size: 15px;
+}
+
+/* Placeholder text - subtle */
+.form-group input::placeholder,
+.form-group textarea::placeholder,
+.form-group select::placeholder {
+  color: var(--gray-500);
+}
+
+/* Focus state: Gold accent */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(212,175,55,0.15), var(--shadow-inner);
+  background: var(--dark-secondary);
+}
+
+.form-error { 
+  color: var(--error); 
+  font-size: 12px; 
+  font-weight: 600; 
+}
+
+/* ── CARDS: Elevated dark components ──────────────────────────────────────── */
+.card {
+  background: var(--dark-tertiary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(212,175,55,0.1);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(212,175,55,0.2);
+}
+
+/* ── PRODUCT GRID ────────────────────────────────────────────────────────── */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* ── BADGES: Status indicators ───────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-green { 
+  background: rgba(16,185,129,0.15); 
+  color: #6EE7B7;
+  border: 1px solid var(--success);
+}
+
+.badge-red { 
+  background: rgba(255,107,107,0.15); 
+  color: #FF9999;
+  border: 1px solid var(--error);
+}
+
+.badge-gold {
+  background: rgba(212,175,55,0.15);
+  color: var(--gold-light);
+  border: 1px solid var(--gold);
+}
+
+/* ── ALERTS ──────────────────────────────────────────────────────────────── */
+.alert {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.alert-error { 
+  background: rgba(255,107,107,0.1);
+  color: #FF9999;
+  border-color: var(--error);
+}
+
+.alert-success { 
+  background: rgba(16,185,129,0.1);
+  color: #6EE7B7;
+  border-color: var(--success);
+}
+
+.alert-info { 
+  background: rgba(59,130,246,0.1);
+  color: #8BCCFF;
+  border-color: var(--info);
+}
+
+/* ── TABLE ───────────────────────────────────────────────────────────────── */
+.data-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 14px;
+  background: var(--dark-tertiary);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 14px 16px;
+  background: rgba(212,175,55,0.1);
+  border-bottom: 2px solid rgba(212,175,55,0.2);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.data-table td { 
+  padding: 12px 16px; 
+  border-bottom: 1px solid rgba(212,175,55,0.08);
+  vertical-align: middle;
+  color: var(--light-text);
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+
+.data-table tr:hover td { 
+  background: rgba(212,175,55,0.05);
+}
+
+/* ── MODAL ───────────────────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--dark-tertiary);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 480px;
+  width: 92%;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(212,175,55,0.15);
+}
+
+/* ── SPINNER ─────────────────────────────────────────────────────────────── */
+.spinner {
+  width: 40px; 
+  height: 40px;
+  border: 3px solid rgba(212,175,55,0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes spin { 
+  to { transform: rotate(360deg); } 
+}
+
+/* ── EMPTY STATE ──────────────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--gray-500);
+}
+
+.empty-state .empty-icon { 
+  font-size: 64px; 
+  margin-bottom: 16px; 
+  opacity: 0.6;
+}
+
+.empty-state h3 { 
+  margin: 0 0 8px; 
+  color: var(--light-text); 
+  font-size: 22px; 
+}
+
+.empty-state p { 
+  margin: 0 0 24px; 
+  font-size: 15px;
+  color: var(--gray-400);
+}
+
+/* ── SECTION HEADINGS ────────────────────────────────────────────────────── */
+.section-heading { 
+  margin: 0 0 8px; 
+  font-size: 28px; 
+  font-weight: 800; 
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+
+.section-heading-gold {
+  color: var(--gold);
+}
+
+.section-sub { 
+  margin: 0 0 28px; 
+  color: var(--gray-400); 
+  font-size: 15px;
+}
+
+/* ── DIVIDER ──────────────────────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(212,175,55,0.3), transparent);
+  margin: 24px 0;
+}
+
+/* ── TEXT UTILITIES ───────────────────────────────────────────────────────── */
+.text-muted { color: var(--gray-400); }
+.text-gold { color: var(--gold); }
+.text-error { color: var(--error); }
+.text-success { color: var(--success); }
+
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+
+/* ── FLEXBOX UTILITIES ────────────────────────────────────────────────────── */
+.text-center { text-align: center; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.w-full { width: 100%; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  
+  .page-container {
+    padding: 20px 16px;
+  }
+  
+  .modal {
+    max-width: 90vw;
+    padding: 24px;
+  }
+  
+  .section-heading {
+    font-size: 24px;
+  }
+}
