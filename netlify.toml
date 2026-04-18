@@ -1,0 +1,11 @@
+# Netlify Configuration for Zenith Atelier Frontend
+
+[build]
+  command = "cd frontend && npm run build"
+  publish = "frontend/dist"
+
+[[redirects]]
+  # SPA fallback - redirect unmatched routes to index.html for React Router
+  from = "/*"
+  to = "/index.html"
+  status = 200
