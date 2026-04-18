@@ -1,4 +1,5 @@
 import { PGlite } from '@electric-sql/pglite';
+import pg from 'pg';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -8,15 +9,41 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ── Database Connection ───────────────────────────────────────────────────────
-// Uses PGlite for local development (SQLite-based PostgreSQL-compatible)
-// For production, use process.env.DATABASE_URL to connect to real PostgreSQL
+// Uses real PostgreSQL via DATABASE_URL in production
+// Falls back to PGlite for local development
 const dbPath = path.resolve(__dirname, '../../pgdata');
 
-let db: PGlite;
+let pgPool: pg.Pool | null = null;
+let pglite: PGlite | null = null;
+const isProduction = process.env.DATABASE_URL !== undefined;
+
+// Helper function to execute queries consistently
+async function executeQuery(text: string, params?: unknown[]) {
+  if (isProduction && pgPool) {
+    return await pgPool.query(text, params);
+  } else if (!isProduction && pglite) {
+    const result = await pglite.query(text, params) as { rows: Array<Record<string, unknown>> };
+    return { rows: result.rows, rowCount: result.rows.length };
+  }
+  throw new Error('Database not initialized');
+}
 
 async function initDatabase() {
-  db = new PGlite(dbPath);
-  await db.waitReady;
+  if (isProduction) {
+    // Use real PostgreSQL in production
+    pgPool = new pg.Pool({
+      connectionString: process.env.DATABASE_URL,
+    });
+    console.log('[DB] Connected to PostgreSQL via DATABASE_URL');
+    // Test connection
+    const client = await pgPool.connect();
+    client.release();
+  } else {
+    // Use PGlite for local development
+    pglite = new PGlite(dbPath);
+    await pglite.waitReady;
+    console.log('[DB] Using PGlite for local development');
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -26,7 +53,7 @@ async function doInit() {
 
   try {
     // Migration tracking table
-    await db.query(`
+    await executeQuery(`
       CREATE TABLE IF NOT EXISTS _migrations (
         filename   VARCHAR(255) PRIMARY KEY,
         applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -39,21 +66,21 @@ async function doInit() {
       : [];
 
     // Check if users table already exists (pre-migration-tracker DB)
-    const usersExists = await db.query(`
+    const usersExists = await executeQuery(`
       SELECT EXISTS (
         SELECT FROM information_schema.tables
         WHERE table_schema = 'public' AND table_name = 'users'
       )
     `) as { rows: Array<{ exists: boolean }> };
     
-    const migrationsCount = await db.query(
+    const migrationsCount = await executeQuery(
       `SELECT COUNT(*)::text AS count FROM _migrations`
     ) as { rows: Array<{ count: string }> };
 
     if (usersExists.rows[0]?.exists && migrationsCount.rows[0]?.count === '0') {
       // Existing DB with no tracker — mark all files as already applied
       for (const file of allFiles) {
-        await db.query(
+        await executeQuery(
           `INSERT INTO _migrations (filename) VALUES ($1) ON CONFLICT DO NOTHING`,
           [file]
         );
@@ -62,7 +89,7 @@ async function doInit() {
     } else {
       // Fresh DB or incremental — run only unapplied migrations
       for (const file of allFiles) {
-        const already = await db.query(
+        const already = await executeQuery(
           `SELECT filename FROM _migrations WHERE filename = $1`, [file]
         ) as { rows: Array<{ filename: string }> };
         
@@ -79,10 +106,10 @@ async function doInit() {
           .filter(stmt => stmt.length > 0);
         
         for (const stmt of statements) {
-          await db.query(stmt);
+          await executeQuery(stmt);
         }
         
-        await db.query(`INSERT INTO _migrations (filename) VALUES ($1)`, [file]);
+        await executeQuery(`INSERT INTO _migrations (filename) VALUES ($1)`, [file]);
       }
     }
 
@@ -93,7 +120,7 @@ async function doInit() {
     const adminPassword = process.env.ADMIN_PASSWORD ?? 'ChangeMe@123';
     const hash = await bcrypt.hash(adminPassword, 10);
     
-    await db.query(
+    await executeQuery(
       `INSERT INTO users (email, display_name, password_hash, role, email_verified)
        VALUES ($1, $2, $3, 'admin', TRUE)
        ON CONFLICT (email) DO UPDATE
@@ -120,15 +147,17 @@ export const dbReady: Promise<void> = doInit().catch(err => {
 export const pool = {
   query: async (text: string, params?: unknown[]) => {
     await dbReady; // wait for init to finish
-    const result = await db.query(text, params) as { rows: Array<Record<string, unknown>> };
+    const result = await executeQuery(text, params);
     return {
       rows: result.rows,
-      rowCount: result.rows.length,
+      rowCount: result.rowCount || result.rows.length,
     };
   },
   end: async () => {
-    if (db) {
-      await db.close();
+    if (isProduction && pgPool) {
+      await pgPool.end();
+    } else if (!isProduction && pglite) {
+      await pglite.close();
     }
   },
 };
