@@ -322,7 +322,7 @@ export default function CheckoutPage() {
           {/* Postal Code */}
           <div className="form-group">
             <label htmlFor="shipping_postal_code">
-              Postal Code <span style={{ color: '#dc2626' }}>*</span> (Chandigarh only)
+              Postal Code <span style={{ color: '#FF6B35' }}>*</span> (Chandigarh only)
             </label>
             <input
               id="shipping_postal_code"
@@ -375,12 +375,12 @@ export default function CheckoutPage() {
                       >
                         <div>
                           <div style={{ fontWeight: 600, marginBottom: 4 }}>{item.name}</div>
-                          <div style={{ fontSize: 13, color: 'var(--gray-600)', display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <div style={{ fontSize: 13, color: 'var(--white)', display: 'flex', gap: 8, alignItems: 'center' }}>
                             <span>₹{discountedPrice.toFixed(2)}</span>
                             {discount > 0 && (
                               <>
                                 <span style={{ textDecoration: 'line-through' }}>₹{originalPrice.toFixed(2)}</span>
-                                <span style={{ background: '#dc2626', color: '#fff', padding: '2px 6px', borderRadius: 2, fontSize: 11, fontWeight: 700 }}>
+                                <span style={{ background: 'var(--gold-gradient)', color: '#fff', padding: '2px 6px', borderRadius: 2, fontSize: 11, fontWeight: 700, boxShadow: 'var(--gold-glow)' }}>
                                   -{discount}%
                                 </span>
                               </>
@@ -425,7 +425,7 @@ export default function CheckoutPage() {
 
                 {/* Security info */}
                 <div style={{ marginTop: 16, padding: 12, background: '#f0fdf4', borderRadius: 6 }}>
-                  <div style={{ fontSize: 13, color: 'var(--green-dark)', display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <div style={{ fontSize: 13, color: 'var(--white)', display: 'flex', gap: 8, alignItems: 'center' }}>
                     <span>🔒</span>
                     <span>Secured by Razorpay. Your card details are safe.</span>
                   </div>

@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>📧</div>
             <h2 style={{ margin: '0 0 12px', fontSize: 22 }}>Check your email</h2>
-            <p style={{ color: 'var(--gray-600)', marginBottom: 24, fontSize: 15 }}>
+            <p style={{ color: 'var(--white)', marginBottom: 24, fontSize: 15 }}>
               If <strong>{email}</strong> is registered, we've sent a password reset link. Check your inbox (and spam folder).
             </p>
             <Link to="/login" className="btn btn-primary" style={{ textDecoration: 'none' }}>
@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
           // ── PASSWORD RESET FORM ──
           <>
             <h1 style={{ marginTop: 0, marginBottom: 8, fontSize: 24 }}>Forgot Password</h1>
-            <p style={{ color: 'var(--gray-600)', marginTop: 0, marginBottom: 24, fontSize: 14 }}>
+            <p style={{ color: 'var(--white)', marginTop: 0, marginBottom: 24, fontSize: 14 }}>
               Enter your email and we'll send you a reset link.
             </p>
 
@@ -91,7 +91,7 @@ export default function ForgotPasswordPage() {
             </form>
 
             {/* Link back to login for users who remember password */}
-            <p style={{ marginTop: 20, textAlign: 'center', fontSize: 14, color: 'var(--gray-600)' }}>
+            <p style={{ marginTop: 20, textAlign: 'center', fontSize: 14, color: 'var(--white)' }}>
               Remember your password? <Link to="/login">Sign in</Link>
             </p>
           </>

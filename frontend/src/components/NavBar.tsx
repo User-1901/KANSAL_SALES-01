@@ -152,7 +152,7 @@ export default function NavBar() {
             {/* Display user's name */}
             <span
               data-testid="display-name"
-              style={{ fontSize: 14, color: 'var(--light-text)', padding: '0 8px' }}
+              style={{ fontSize: 14, color: 'var(--white)', padding: '0 8px' }}
             >
               {user.displayName}
             </span>

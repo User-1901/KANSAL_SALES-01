@@ -122,7 +122,7 @@ export default function RegisterPage() {
             Welcome to Zenith Atelier
           </h2>
           <p style={{ 
-            color: 'var(--gray-400)',
+            color: 'var(--white)',
             fontSize: 15,
             marginBottom: 28,
             lineHeight: 1.6,

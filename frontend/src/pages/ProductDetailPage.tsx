@@ -181,8 +181,8 @@ const ProductDetailPage: React.FC = () => {
             <span className="product-price">₹{displayPrice}</span>
             {discount > 0 && (
               <>
-                <span style={{ textDecoration: 'line-through', color: '#94a3b8', fontSize: 14 }}>₹{originalPrice.toFixed(2)}</span>
-                <span style={{ background: '#dc2626', color: '#fff', padding: '4px 12px', borderRadius: 4, fontSize: 12, fontWeight: 700 }}>
+                <span style={{ textDecoration: 'line-through', color: 'var(--white)', fontSize: 14 }}>₹{originalPrice.toFixed(2)}</span>
+                <span style={{ background: 'var(--gold-gradient)', color: '#fff', padding: '4px 12px', borderRadius: 4, fontSize: 12, fontWeight: 700, boxShadow: 'var(--gold-glow)' }}>
                   -{discount}% OFF
                 </span>
               </>

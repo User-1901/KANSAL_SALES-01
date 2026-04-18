@@ -91,7 +91,7 @@ export default function LoginPage() {
         <p style={{
           margin: '0 0 28px',
           fontSize: 14,
-          color: 'var(--gray-400)',
+          color: 'var(--white)',
         }}>
           Sign in to your Zenith Atelier account
         </p>

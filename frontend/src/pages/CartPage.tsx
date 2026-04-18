@@ -176,7 +176,7 @@ export default function CartPage() {
       {/* Show empty cart message if no items */}
       {items.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <p style={{ fontSize: 18, color: 'var(--gray-400)' }}>Your cart is empty.</p>
+          <p style={{ fontSize: 18, color: 'var(--white)' }}>Your cart is empty.</p>
           <Link to="/products" className="btn btn-primary" style={{ textDecoration: 'none' }}>
             Browse Products
           </Link>
@@ -211,10 +211,10 @@ export default function CartPage() {
                           <span style={{ fontWeight: 700, color: '#16a34a' }}>₹{discountedPrice.toFixed(2)}</span>
                           {discount > 0 && (
                             <>
-                              <span style={{ textDecoration: 'line-through', color: '#94a3b8', fontSize: 13 }}>
+                              <span style={{ textDecoration: 'line-through', color: 'var(--white)', fontSize: 13 }}>
                                 ₹{originalPrice.toFixed(2)}
                               </span>
-                              <span style={{ background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: 3, fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          <span style={{ background: 'var(--gold-gradient)', color: '#fff', padding: '2px 8px', borderRadius: 3, fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', boxShadow: 'var(--gold-glow)' }}>
                                 -{discount}%
                               </span>
                             </>
@@ -234,7 +234,7 @@ export default function CartPage() {
                               borderRadius: 4,
                               fontSize: 18,
                               fontWeight: 700,
-                              color: item.quantity <= 1 ? '#cbd5e1' : '#334155',
+                              color: 'var(--white)',
                               cursor: item.quantity <= 1 ? 'not-allowed' : 'pointer',
                               transition: 'all 0.15s',
                             }}
@@ -253,7 +253,7 @@ export default function CartPage() {
                               borderRadius: 4,
                               fontSize: 18,
                               fontWeight: 700,
-                              color: '#334155',
+                              color: 'var(--white)',
                               cursor: 'pointer',
                               transition: 'all 0.15s',
                             }}

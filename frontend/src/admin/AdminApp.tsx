@@ -7,6 +7,7 @@ import AdminProductsPage from './AdminProductsPage';
 import AdminCategoriesPage from './AdminCategoriesPage';
 import AdminUsersPage from './AdminUsersPage';
 import AdminRatingsPage from './AdminRatingsPage';
+import AdminInventoryPage from './AdminInventoryPage';
 
 export default function AdminApp() {
   const { user, isLoading } = useAuth();
@@ -19,11 +20,11 @@ export default function AdminApp() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#0f172a',
+        background: 'var(--dark)',
       }}>
         <div style={{
           fontSize: 24,
-          color: '#f8fafc',
+          color: 'var(--white)',
         }}>
           Loading...
         </div>
@@ -54,6 +55,7 @@ export default function AdminApp() {
         <Route index element={<AdminDashboard />} />
         <Route path="products" element={<AdminProductsPage />} />
         <Route path="categories" element={<AdminCategoriesPage />} />
+        <Route path="inventory" element={<AdminInventoryPage />} />
         <Route path="ratings" element={<AdminRatingsPage />} />
         <Route path="users" element={<AdminUsersPage />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />

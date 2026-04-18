@@ -68,8 +68,8 @@ export default function AdminRatingsPage() {
     <div>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Ratings & Reviews</h1>
-        <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 14 }}>
+        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: 'var(--gold)', textShadow: '0 0 12px rgba(255, 107, 53, 0.4)' }}>Ratings & Reviews</h1>
+        <p style={{ margin: '4px 0 0', color: 'var(--light-text)', fontSize: 14 }}>
           {ratings.length} total rating{ratings.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -77,9 +77,9 @@ export default function AdminRatingsPage() {
       {/* Filters */}
       <div
         style={{
-          background: '#fff',
+          background: 'var(--dark-tertiary)',
           borderRadius: 12,
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--dark-secondary)',
           padding: '20px 24px',
           marginBottom: 24,
           display: 'flex',
@@ -88,7 +88,7 @@ export default function AdminRatingsPage() {
         }}
       >
         <div style={{ flex: 1 }}>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#64748b', marginBottom: 6 }}>
+          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: 'var(--gold)', marginBottom: 6, textShadow: '0 0 8px rgba(255, 107, 53, 0.3)' }}>
             Search Product
           </label>
           <input
@@ -99,18 +99,20 @@ export default function AdminRatingsPage() {
             style={{
               width: '100%',
               padding: '8px 12px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--dark-secondary)',
               borderRadius: 6,
               fontSize: 13,
               outline: 'none',
+              background: 'var(--dark-secondary)',
+              color: 'var(--light-text)'
             }}
-            onFocus={e => (e.target.style.borderColor = '#16a34a')}
-            onBlur={e => (e.target.style.borderColor = '#e2e8f0')}
+            onFocus={e => (e.target.style.borderColor = 'var(--gold)')}
+            onBlur={e => (e.target.style.borderColor = 'var(--dark-secondary)')}
           />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#64748b', marginBottom: 6 }}>
+          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: 'var(--gold)', marginBottom: 6, textShadow: '0 0 8px rgba(255, 107, 53, 0.3)' }}>
             Filter by Rating
           </label>
           <select
@@ -118,14 +120,16 @@ export default function AdminRatingsPage() {
             onChange={e => setFilterRating(e.target.value === '' ? null : Number(e.target.value))}
             style={{
               padding: '8px 12px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--dark-secondary)',
               borderRadius: 6,
               fontSize: 13,
               outline: 'none',
               cursor: 'pointer',
+              background: 'var(--dark-secondary)',
+              color: 'var(--light-text)'
             }}
-            onFocus={e => (e.target.style.borderColor = '#16a34a')}
-            onBlur={e => (e.target.style.borderColor = '#e2e8f0')}
+            onFocus={e => (e.target.style.borderColor = 'var(--gold)')}
+            onBlur={e => (e.target.style.borderColor = 'var(--dark-secondary)')}
           >
             <option value="">All Ratings</option>
             <option value="5">⭐⭐⭐⭐⭐ (5 Star)</option>
@@ -138,11 +142,11 @@ export default function AdminRatingsPage() {
       </div>
 
       {/* Ratings List */}
-      <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--dark-tertiary)', borderRadius: 12, border: '1px solid var(--dark-secondary)', overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>Loading ratings…</div>
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-400)' }}>Loading ratings…</div>
         ) : filteredRatings.length === 0 ? (
-          <div style={{ padding: '48px 24px', textAlign: 'center', color: '#94a3b8' }}>
+          <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--gray-400)' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>⭐</div>
             <p style={{ margin: 0, fontSize: 15 }}>
               {ratings.length === 0 ? 'No ratings yet.' : 'No ratings match your filters.'}
@@ -155,15 +159,15 @@ export default function AdminRatingsPage() {
                 key={rating.id}
                 style={{
                   padding: '20px 24px',
-                  borderBottom: idx !== filteredRatings.length - 1 ? '1px solid #e2e8f0' : 'none',
-                  background: rating.rating <= 2 ? '#fef2f2' : 'transparent',
+                  borderBottom: idx !== filteredRatings.length - 1 ? '1px solid var(--dark-secondary)' : 'none',
+                  background: rating.rating <= 2 ? 'rgba(255, 107, 107, 0.05)' : 'transparent',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
                   <div style={{ flex: 1 }}>
                     {/* Product name and rating */}
                     <div style={{ marginBottom: 8 }}>
-                      <span style={{ fontWeight: 700, fontSize: 15, color: '#0f172a' }}>{rating.product_name}</span>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--light-text)' }}>{rating.product_name}</span>
                       <span style={{ marginLeft: 12, fontSize: 16 }}>{getStarDisplay(rating.rating)}</span>
                     </div>
 
@@ -173,9 +177,9 @@ export default function AdminRatingsPage() {
                         style={{
                           margin: '8px 0',
                           fontSize: 13,
-                          color: '#475569',
+                          color: 'var(--gray-400)',
                           fontStyle: 'italic',
-                          borderLeft: '3px solid #cbd5e1',
+                          borderLeft: '3px solid var(--gold)',
                           paddingLeft: 12,
                         }}
                       >
@@ -184,7 +188,7 @@ export default function AdminRatingsPage() {
                     )}
 
                     {/* User info and date */}
-                    <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 8 }}>
+                    <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 8 }}>
                       <span>
                         By: {rating.user_id ? 'Registered User' : rating.guest_email || 'Guest'}
                       </span>
@@ -199,9 +203,9 @@ export default function AdminRatingsPage() {
                     onClick={() => handleDeleteRating(rating)}
                     style={{
                       padding: '8px 16px',
-                      background: '#fef2f2',
-                      color: '#dc2626',
-                      border: '1px solid #fecaca',
+                      background: 'rgba(255, 107, 107, 0.1)',
+                      color: 'var(--error)',
+                      border: '1px solid var(--error)',
                       borderRadius: 6,
                       fontSize: 12,
                       fontWeight: 700,
@@ -209,10 +213,10 @@ export default function AdminRatingsPage() {
                       transition: 'all 0.2s',
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.background = '#fee2e2';
+                      e.currentTarget.style.background = 'rgba(255, 107, 107, 0.15)';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.background = '#fef2f2';
+                      e.currentTarget.style.background = 'rgba(255, 107, 107, 0.1)';
                     }}
                   >
                     🗑️ Delete

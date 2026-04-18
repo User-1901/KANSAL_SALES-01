@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
           <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
             Zenith Atelier
           </div>
-          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: 'var(--gold)', letterSpacing: '-0.3px' }}>
+          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: 'var(--gold)', letterSpacing: '-0.3px', textShadow: '0 0 12px rgba(255, 107, 53, 0.4)' }}>
             Admin Portal
           </h1>
         </div>

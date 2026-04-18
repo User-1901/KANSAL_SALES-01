@@ -91,8 +91,8 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Admin Accounts</h1>
-          <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 14 }}>
+          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: 'var(--gold)', textShadow: '0 0 12px rgba(255, 107, 53, 0.4)' }}>Admin Accounts</h1>
+          <p style={{ margin: '4px 0 0', color: 'var(--white)', fontSize: 14 }}>
             Manage who has admin access to this panel
           </p>
         </div>
@@ -100,7 +100,7 @@ export default function AdminUsersPage() {
           onClick={() => { setShowForm(s => !s); setForm(EMPTY); setFieldErrors({}); setGlobalError(''); }}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '10px 18px', background: '#2563eb', color: '#fff',
+            padding: '10px 18px', background: 'var(--gold-gradient)', color: 'var(--white)', boxShadow: 'var(--gold-glow)',
             border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: 'pointer',
           }}
         >
@@ -109,7 +109,7 @@ export default function AdminUsersPage() {
       </div>
 
       {globalError && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '10px 14px', borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+        <div style={{ background: 'rgba(255, 107, 107, 0.1)', border: '1px solid var(--error)', color: 'var(--error)', padding: '10px 14px', borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
           {globalError}
         </div>
       )}
@@ -117,25 +117,25 @@ export default function AdminUsersPage() {
       {/* Add admin form */}
       {showForm && (
         <div style={{
-          background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12,
-          padding: '24px 28px', marginBottom: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+          background: 'var(--dark-tertiary)', border: '1px solid var(--dark-secondary)', borderRadius: 12,
+          padding: '24px 28px', marginBottom: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
         }}>
-          <h2 style={{ margin: '0 0 20px', fontSize: 17, fontWeight: 700, color: '#0f172a' }}>New Admin Account</h2>
+          <h2 style={{ margin: '0 0 20px', fontSize: 17, fontWeight: 700, color: 'var(--gold)', textShadow: '0 0 10px rgba(255, 107, 53, 0.3)' }}>New Admin Account</h2>
           <form onSubmit={handleAdd}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div className="form-group">
-                <label htmlFor="a-name">Display Name *</label>
+                <label htmlFor="a-name" style={{ color: 'var(--white)' }}>Display Name *</label>
                 <input id="a-name" type="text" value={form.displayName} onChange={set('displayName')} required placeholder="e.g. Raju Admin" />
                 {fieldErrors.displayName && <span className="form-error">{fieldErrors.displayName}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="a-email">Email Address *</label>
+                <label htmlFor="a-email" style={{ color: 'var(--white)' }}>Email Address *</label>
                 <input id="a-email" type="email" value={form.email} onChange={set('email')} required placeholder="admin@example.com" />
                 {fieldErrors.email && <span className="form-error">{fieldErrors.email}</span>}
               </div>
             </div>
             <div className="form-group" style={{ maxWidth: 360 }}>
-              <label htmlFor="a-pass">Password * <span style={{ fontWeight: 400, textTransform: 'none', color: '#94a3b8' }}>(min 8 characters)</span></label>
+              <label htmlFor="a-pass" style={{ color: 'var(--white)' }}>Password * <span style={{ fontWeight: 400, textTransform: 'none', color: 'var(--white)' }}>(min 8 characters)</span></label>
               <div style={{ position: 'relative' }}>
                 <input
                   id="a-pass"
@@ -151,7 +151,7 @@ export default function AdminUsersPage() {
                   onClick={() => setShowPassword(s => !s)}
                   style={{
                     position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
-                    background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: '#94a3b8',
+                    background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: 'var(--white)',
                   }}
                 >
                   {showPassword ? '🙈' : '👁️'}
@@ -161,7 +161,7 @@ export default function AdminUsersPage() {
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
               <button type="submit" disabled={saving} style={{
-                padding: '10px 22px', background: '#2563eb', color: '#fff',
+                padding: '10px 22px', background: 'var(--gold-gradient)', color: 'var(--white)', boxShadow: 'var(--gold-glow)',
                 border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 14,
                 cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1,
               }}>
@@ -173,9 +173,9 @@ export default function AdminUsersPage() {
       )}
 
       {/* Admins table */}
-      <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--dark-tertiary)', borderRadius: 12, border: '1px solid var(--dark-secondary)', overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>Loading…</div>
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--white)' }}>Loading…</div>
         ) : (
           <table className="data-table">
             <thead>
@@ -200,7 +200,7 @@ export default function AdminUsersPage() {
                         {admin.display_name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <div style={{ fontWeight: 600, fontSize: 14, color: '#0f172a' }}>
+                        <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--gold)' }}>
                           {admin.display_name}
                           {admin.id === currentUser?.id && (
                             <span style={{ marginLeft: 8, fontSize: 11, background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: 20, fontWeight: 700 }}>
@@ -211,8 +211,8 @@ export default function AdminUsersPage() {
                       </div>
                     </div>
                   </td>
-                  <td style={{ color: '#475569', fontSize: 14 }}>{admin.email}</td>
-                  <td style={{ color: '#94a3b8', fontSize: 13 }}>
+                  <td style={{ color: 'var(--gold-light)', fontSize: 14 }}>{admin.email}</td>
+                  <td style={{ color: 'var(--white)', fontSize: 13 }}>
                     {new Date(admin.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td>
@@ -220,14 +220,14 @@ export default function AdminUsersPage() {
                       <button
                         onClick={() => handleDelete(admin)}
                         style={{
-                          padding: '5px 12px', background: '#fef2f2', color: '#dc2626',
-                          border: '1px solid #fecaca', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                          padding: '5px 12px', background: 'rgba(255, 107, 107, 0.1)', color: 'var(--error)',
+                          border: '1px solid var(--error)', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
                         }}
                       >
                         Remove
                       </button>
                     ) : (
-                      <span style={{ fontSize: 12, color: '#94a3b8' }}>—</span>
+                      <span style={{ fontSize: 12, color: 'var(--white)' }}>—</span>
                     )}
                   </td>
                 </tr>

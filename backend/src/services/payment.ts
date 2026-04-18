@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { pool } from '../db.js';
 import { Order, Payment, CreateOrderRequest, CreateOrderResponse, VerifyPaymentRequest } from '../types/index.js';
 import { validateDeliveryPincode } from './delivery.js';
+import { trackSale } from './inventoryService.js';
 
 // ── RAZORPAY INITIALIZATION ─────────────────────────────────────────────────
 // Initialize with lazy loading - only load when both keys are available
@@ -161,6 +162,26 @@ export async function completePayment(
     WHERE id = (SELECT order_id FROM payments WHERE razorpay_order_id = $1)
     RETURNING *
   `, [razorpayOrderId]);
+
+  // ── TRACK SALES FOR INVENTORY MANAGEMENT ────────────────────────────
+  // Get order items and track sales for each product
+  const orderId = result.rows[0]?.id;
+  if (orderId) {
+    try {
+      const itemsResult = await pool.query(`
+        SELECT product_id, quantity FROM order_items WHERE order_id = $1
+      `, [orderId]);
+
+      for (const item of itemsResult.rows) {
+        // Track the sale in inventory system
+        await trackSale(item.product_id, parseInt(item.quantity, 10));
+      }
+      console.log(`✓ Sales tracked for order ${orderId}`);
+    } catch (error) {
+      console.error('Error tracking sales:', error);
+      // Don't fail the payment if inventory tracking fails
+    }
+  }
 
   // ── CLEAR USER'S CART AFTER PAYMENT ─────────────────────────────────
   const orderResult = await pool.query(`

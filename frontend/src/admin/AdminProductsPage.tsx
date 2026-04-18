@@ -207,14 +207,14 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Products</h1>
-          <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 14 }}>
+          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: 'var(--gold)', textShadow: '0 0 12px rgba(255, 107, 53, 0.4)' }}>Products</h1>
+          <p style={{ margin: '4px 0 0', color: 'var(--white)', fontSize: 14 }}>
             {products.length} product{products.length !== 1 ? 's' : ''} in catalog
           </p>
         </div>
         <button onClick={openAdd} style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '10px 18px', background: '#16a34a', color: '#fff',
+          padding: '10px 18px', background: 'var(--gold)', color: 'var(--dark)',
           border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: 'pointer',
         }}>
           + Add Product
@@ -224,24 +224,24 @@ export default function AdminProductsPage() {
       {/* Form panel */}
       {showForm && (
         <div style={{
-          background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12,
-          padding: '24px 28px', marginBottom: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          background: 'var(--dark-tertiary)', border: '1px solid var(--dark-secondary)', borderRadius: 12,
+          padding: '24px 28px', marginBottom: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--gold)', textShadow: '0 0 10px rgba(255, 107, 53, 0.3)' }}>
               {editingId ? '✏️ Edit Product' : '➕ Add New Product'}
             </h2>
-            <button onClick={closeForm} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#94a3b8' }}>✕</button>
+            <button onClick={closeForm} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--white)' }}>✕</button>
           </div>
 
           {error && (
-            <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '10px 14px', borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
+            <div style={{ background: 'rgba(255, 107, 107, 0.1)', border: '1px solid var(--error)', color: 'var(--error)', padding: '10px 14px', borderRadius: 8, fontSize: 13, marginBottom: 16 }}>
               {error}
             </div>
           )}
 
           {success && (
-            <div style={{ background: '#f0fdf4', border: '1px solid #86efac', color: '#16a34a', padding: '10px 14px', borderRadius: 8, fontSize: 13, marginBottom: 16, fontWeight: 600 }}>
+            <div style={{ background: 'rgba(255, 107, 53, 0.1)', border: '1px solid var(--gold)', color: 'var(--gold)', padding: '10px 14px', borderRadius: 8, fontSize: 13, marginBottom: 16, fontWeight: 600 }}>
               {success}
             </div>
           )}
@@ -249,58 +249,58 @@ export default function AdminProductsPage() {
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div className="form-group">
-                <label htmlFor="p-name">Product Name *</label>
+                <label htmlFor="p-name" style={{ color: 'var(--white)' }}>Product Name *</label>
                 <input id="p-name" type="text" value={form.name} onChange={set('name')} required placeholder="e.g. Full Cream Milk" />
               </div>
               <div className="form-group">
-                <label htmlFor="p-price">Price (₹) *</label>
+                <label htmlFor="p-price" style={{ color: 'var(--white)' }}>Price (₹) *</label>
                 <input id="p-price" type="number" step="0.01" min="0" value={form.price} onChange={set('price')} required placeholder="0.00" />
               </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div className="form-group">
-                <label htmlFor="p-discount">Discount (%) - Optional</label>
+                <label htmlFor="p-discount" style={{ color: 'var(--white)' }}>Discount (%) - Optional</label>
                 <input id="p-discount" type="number" step="0.01" min="0" max="100" value={form.discountPercentage} onChange={set('discountPercentage')} placeholder="0.00" />
-                <small style={{ color: '#94a3b8', marginTop: 4, display: 'block' }}>e.g., 10 for 10% off</small>
+                <small style={{ color: 'var(--white)', marginTop: 4, display: 'block' }}>e.g., 10 for 10% off</small>
               </div>
               <div className="form-group">
-                <label htmlFor="p-discount-price">Discounted Price (Auto-calculated)</label>
+                <label htmlFor="p-discount-price" style={{ color: 'var(--white)' }}>Discounted Price (Auto-calculated)</label>
                 <input id="p-discount-price" type="number" step="0.01" min="0" value={
                   form.price && form.discountPercentage
                     ? (parseFloat(form.price) - (parseFloat(form.price) * parseFloat(form.discountPercentage) / 100)).toFixed(2)
                     : form.price
-                } disabled style={{ background: '#f1f5f9', cursor: 'not-allowed' }} placeholder="0.00" />
+                } disabled style={{ background: 'var(--dark-secondary)', cursor: 'not-allowed' }} placeholder="0.00" />
               </div>
             </div>
 
             <div className="form-group">
-              <label htmlFor="p-desc">Description</label>
+              <label htmlFor="p-desc" style={{ color: 'var(--white)' }}>Description</label>
               <textarea id="p-desc" rows={3} value={form.description} onChange={set('description')} placeholder="Short product description…" style={{ resize: 'vertical' }} />
             </div>
 
             <div className="form-group">
-              <label htmlFor="p-why-shop">Why Shop With Us?</label>
+              <label htmlFor="p-why-shop" style={{ color: 'var(--white)' }}>Why Shop With Us?</label>
               <textarea id="p-why-shop" rows={3} value={form.whyShopMessage} onChange={set('whyShopMessage')} placeholder="e.g., 🚚 Fast Delivery\n💰 Best Prices\n📦 Wide Assortment" style={{ resize: 'vertical' }} />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div className="form-group">
-                <label htmlFor="p-cat">Category</label>
+                <label htmlFor="p-cat" style={{ color: 'var(--white)' }}>Category</label>
                 <select id="p-cat" value={form.categoryId} onChange={set('categoryId')}>
                   <option value="">— No Category —</option>
                   {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="p-qty">Quantity Available *</label>
+                <label htmlFor="p-qty" style={{ color: 'var(--white)' }}>Quantity Available *</label>
                 <input id="p-qty" type="number" min="0" value={form.quantity} onChange={set('quantity')} required placeholder="0" />
               </div>
             </div>
 
             {/* ── Image upload ── */}
             <div className="form-group">
-              <label>Product Images</label>
+              <label style={{ color: 'var(--white)' }}>Product Images</label>
 
               {/* Preview grid */}
               {imagePreviews.length > 0 && (
@@ -310,7 +310,7 @@ export default function AdminProductsPage() {
                       <img
                         src={src}
                         alt=""
-                        style={{ width: 90, height: 90, objectFit: 'cover', borderRadius: 8, border: '1px solid #e2e8f0' }}
+                        style={{ width: 90, height: 90, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--dark-secondary)' }}
                       />
                       <button
                         type="button"
@@ -346,32 +346,32 @@ export default function AdminProductsPage() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
                   padding: '10px 18px',
-                  background: '#f8fafc', color: '#334155',
-                  border: '2px dashed #cbd5e1', borderRadius: 8,
+                  background: 'var(--dark-secondary)', color: 'var(--light-text)',
+                  border: '2px dashed var(--gold)', borderRadius: 8,
                   fontSize: 14, fontWeight: 600, cursor: 'pointer',
                   transition: 'all 0.15s',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#16a34a'; (e.currentTarget as HTMLButtonElement).style.color = '#16a34a'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#cbd5e1'; (e.currentTarget as HTMLButtonElement).style.color = '#334155'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--gold-light)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--gold)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--gold)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--light-text)'; }}
               >
                 📁 Choose Images
               </button>
-              <span style={{ marginLeft: 10, fontSize: 12, color: '#94a3b8' }}>
+              <span style={{ marginLeft: 10, fontSize: 12, color: 'var(--white)' }}>
                 JPG, PNG, WEBP, GIF — max 5MB each
               </span>
             </div>
 
             <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
               <button type="submit" disabled={isBusy} style={{
-                padding: '10px 22px', background: '#16a34a', color: '#fff',
+                padding: '10px 22px', background: 'var(--gold)', color: 'var(--dark)',
                 border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 14,
                 cursor: isBusy ? 'not-allowed' : 'pointer', opacity: isBusy ? 0.7 : 1,
               }}>
                 {uploading ? 'Uploading images…' : saving ? (editingId ? 'Saving changes…' : 'Adding…') : editingId ? '💾 Save Changes' : '➕ Add Product'}
               </button>
               <button type="button" onClick={closeForm} style={{
-                padding: '10px 18px', background: '#f1f5f9', color: '#475569',
-                border: '1px solid #e2e8f0', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer',
+                padding: '10px 18px', background: 'var(--dark-secondary)', color: 'var(--white)',
+                border: '1px solid var(--dark-secondary)', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer',
               }}>
                 Cancel
               </button>
@@ -381,11 +381,11 @@ export default function AdminProductsPage() {
       )}
 
       {/* Products table */}
-      <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--dark-tertiary)', borderRadius: 12, border: '1px solid var(--dark-secondary)', overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>Loading…</div>
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--white)' }}>Loading…</div>
         ) : products.length === 0 ? (
-          <div style={{ padding: '48px 24px', textAlign: 'center', color: '#94a3b8' }}>
+          <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--white)' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>📦</div>
             <p style={{ margin: 0, fontSize: 15 }}>No products yet. Add your first product above.</p>
           </div>
@@ -410,25 +410,25 @@ export default function AdminProductsPage() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         {p.image_urls[0]
                           ? <img src={p.image_urls[0]} alt="" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }} />
-                          : <div style={{ width: 44, height: 44, background: '#f1f5f9', borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>📦</div>
+                          : <div style={{ width: 44, height: 44, background: 'var(--dark-secondary)', borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>📦</div>
                         }
                         <div>
-                          <div style={{ fontWeight: 600, fontSize: 14, color: '#0f172a' }}>{p.name}</div>
+                          <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--white)' }}>{p.name}</div>
                           {p.description && (
-                            <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2, maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div style={{ fontSize: 12, color: 'var(--white)', marginTop: 2, maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {p.description}
                             </div>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td style={{ fontWeight: 700, color: '#15803d' }}>
+                    <td style={{ fontWeight: 700, color: 'var(--success)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span>₹{parseFloat(p.price).toFixed(2)}</span>
                         {p.discount_percentage && p.discount_percentage > 0 && (
                           <div style={{ 
-                            background: '#fef2f2', 
-                            color: '#dc2626', 
+                            background: 'rgba(255, 107, 107, 0.1)', 
+                            color: 'var(--error)', 
                             padding: '2px 8px', 
                             borderRadius: 4, 
                             fontSize: 11, 
@@ -440,13 +440,13 @@ export default function AdminProductsPage() {
                         )}
                       </div>
                       {p.discount_percentage && p.discount_percentage > 0 && (
-                        <div style={{ fontSize: 12, color: '#16a34a', marginTop: 2 }}>
+                        <div style={{ fontSize: 12, color: 'var(--gold)', marginTop: 2 }}>
                           Sale: ₹{(parseFloat(p.price) - (parseFloat(p.price) * p.discount_percentage / 100)).toFixed(2)}
                         </div>
                       )}
                     </td>
-                    <td style={{ fontWeight: 700, color: '#334155' }}>{p.quantity_available || 0}</td>
-                    <td style={{ color: cat ? '#334155' : '#94a3b8', fontSize: 13 }}>{cat ? cat.name : 'None'}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--white)' }}>{p.quantity_available || 0}</td>
+                    <td style={{ color: cat ? 'var(--white)' : 'var(--white)', fontSize: 13 }}>{cat ? cat.name : 'None'}</td>
                     <td>
                       <span style={{
                         padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
@@ -459,12 +459,12 @@ export default function AdminProductsPage() {
                     <td>
                       <div style={{ display: 'flex', gap: 6 }}>
                         <button onClick={() => openEdit(p)} style={{
-                          padding: '5px 12px', background: '#f1f5f9', color: '#334155',
-                          border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                          padding: '5px 12px', background: 'var(--dark-secondary)', color: 'var(--white)',
+                          border: '1px solid var(--dark-secondary)', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
                         }}>Edit</button>
                         <button onClick={() => handleDelete(p)} style={{
-                          padding: '5px 12px', background: '#fef2f2', color: '#dc2626',
-                          border: '1px solid #fecaca', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                          padding: '5px 12px', background: 'rgba(255, 107, 107, 0.1)', color: 'var(--error)',
+                          border: '1px solid var(--error)', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
                         }}>Delete</button>
                       </div>
                     </td>

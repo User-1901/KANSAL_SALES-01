@@ -4,17 +4,23 @@
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── PRIMARY COLORS: Elegant Gold + Dark Theme ────────────────────────────── */
-  /* Gold: Premium, luxurious, high-end positioning */
-  --gold: #D4AF37;              /* Classic luxury gold */
-  --gold-dark: #AA8C2C;         /* Darker gold for accents */
-  --gold-light: #E8D7B8;        /* Light gold for subtle backgrounds */
-  --gold-pale: #F5F1E8;         /* Pale gold background */
+  /* ── PRIMARY COLORS: Vibrant Orange + Dark Theme ────────────────────────────── */
+  /* Orange: Modern, energetic, contemporary accent */
+  --gold: #FF6B35;              /* Vibrant orange - primary accent */
+  --gold-dark: #E55100;         /* Darker orange for accents */
+  --gold-light: #FFB088;        /* Light orange for subtle backgrounds */
+  --gold-pale: #FFF1E6;         /* Pale orange background */
+  
+  /* Gradient Blends: Classy orange-to-black transitions */
+  --gold-gradient: linear-gradient(135deg, #FF6B35 0%, #E55100 50%, #000000 100%);
+  --gold-gradient-soft: linear-gradient(135deg, #FF6B35 0%, #FF8855 40%, #0A0A0A 100%);
+  --gold-gradient-accent: linear-gradient(90deg, #FF6B35, #E55100);
+  --gold-glow: 0 0 20px rgba(255, 107, 53, 0.4), 0 0 40px rgba(255, 107, 53, 0.2);
 
   /* Dark Theme: Professional, sophisticated, elegant */
-  --dark: #0F1419;              /* Almost pure black - main background */
-  --dark-secondary: #1A1E2E;    /* Dark gray-blue - secondary backgrounds */
-  --dark-tertiary: #252B3B;     /* Slightly lighter - cards, components */
+  --dark: #000000;              /* Pure black - main background */
+  --dark-secondary: #0A0A0A;    /* Stealth black - secondary backgrounds */
+  --dark-tertiary: #121212;     /* Slightly lighter stealth black - cards, components */
   
   /* Neutral Colors: Complementary to dark theme */
   --white: #FFFFFF;             /* Pure white - text, highlights */

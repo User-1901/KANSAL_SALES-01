@@ -57,6 +57,7 @@ export default function HomePage() {
           fontWeight: 800, 
           letterSpacing: '-0.5px',
           color: 'var(--gold)',
+          textShadow: '0 0 12px rgba(255, 107, 53, 0.4)',
         }}>
           Zenith Atelier
         </h1>
@@ -64,7 +65,7 @@ export default function HomePage() {
           margin: '0 0 12px', 
           fontSize: 18, 
           opacity: 0.9,
-          color: 'var(--light-text)',
+          color: 'var(--white)',
           fontWeight: 300,
           letterSpacing: '0.3px',
         }}>
@@ -120,7 +121,7 @@ export default function HomePage() {
           Featured Collections
         </h2>
         <p style={{ 
-          color: 'var(--gray-400)', 
+          color: 'var(--white)', 
           marginTop: 8,
           marginBottom: 32,
           fontSize: 15,
@@ -131,10 +132,10 @@ export default function HomePage() {
 
         {/* Show loading message while fetching products */}
         {loading ? (
-          <p style={{ fontSize: 16, color: 'var(--light-text)', textAlign: 'center' }}>Loading featured collections...</p>
+          <p style={{ fontSize: 16, color: 'var(--white)', textAlign: 'center' }}>Loading featured collections...</p>
         ) : products.length === 0 ? (
           /* Show message if no products available */
-          <p style={{ fontSize: 15, color: 'var(--gray-400)', textAlign: 'center' }}>No products available at the moment.</p>
+          <p style={{ fontSize: 15, color: 'var(--white)', textAlign: 'center' }}>No products available at the moment.</p>
         ) : (
           /* Display products in a grid layout */
           <div className="product-grid">

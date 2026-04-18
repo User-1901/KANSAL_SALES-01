@@ -1,6 +1,6 @@
 /**
  * Run this once to create/update the admin account:
- *   npm run seed:admin   (from server/ directory)
+ *   npm run seed:admin   (from backend/ directory)
  */
 import 'dotenv/config';
 import bcrypt from 'bcrypt';

@@ -30,7 +30,7 @@ export default function ResetPasswordPage() {
         <div className="card" style={{ padding: 32, textAlign: 'center' }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>❌</div>
           <h2 style={{ marginTop: 0 }}>Invalid Link</h2>
-          <p style={{ color: 'var(--gray-600)' }}>This reset link is missing or invalid.</p>
+          <p style={{ color: 'var(--white)' }}>This reset link is missing or invalid.</p>
           <Link to="/forgot-password" className="btn btn-primary" style={{ textDecoration: 'none' }}>
             Request a new link
           </Link>
@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
         <div className="card" style={{ padding: 32, textAlign: 'center' }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
           <h2 style={{ marginTop: 0 }}>Password Updated</h2>
-          <p style={{ color: 'var(--gray-600)', marginBottom: 24 }}>
+          <p style={{ color: 'var(--white)', marginBottom: 24 }}>
             Your password has been reset successfully.
           </p>
           <Link to="/login" className="btn btn-primary" style={{ textDecoration: 'none' }}>
@@ -101,7 +101,7 @@ export default function ResetPasswordPage() {
     <div className="page-container" style={{ maxWidth: 420, paddingTop: 48 }}>
       <div className="card" style={{ padding: 32 }}>
         <h1 style={{ marginTop: 0, marginBottom: 8, fontSize: 24 }}>Reset Password</h1>
-        <p style={{ color: 'var(--gray-600)', marginTop: 0, marginBottom: 24, fontSize: 14 }}>
+        <p style={{ color: 'var(--white)', marginTop: 0, marginBottom: 24, fontSize: 14 }}>
           Enter your new password below.
         </p>
 

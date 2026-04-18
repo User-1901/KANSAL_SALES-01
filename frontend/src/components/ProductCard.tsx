@@ -130,7 +130,7 @@ export default function ProductCard({ product }: Props) {
         {/* Product name — click to go to detail page */}
         <div 
           onClick={() => navigate(`/products/${product.id}`)}
-          style={{ fontWeight: 600, fontSize: 15, cursor: 'pointer', color: '#0f172a' }}
+          style={{ fontWeight: 600, fontSize: 15, cursor: 'pointer', color: 'var(--white)' }}
         >
           {product.name}
         </div>
@@ -144,10 +144,10 @@ export default function ProductCard({ product }: Props) {
           </div>
           {product.discount_percentage && product.discount_percentage > 0 && (
             <>
-              <span style={{ textDecoration: 'line-through', color: '#94a3b8', fontSize: 13 }}>
+              <span style={{ textDecoration: 'line-through', color: 'var(--white)', fontSize: 13 }}>
                 ₹{parseFloat(product.price).toFixed(2)}
               </span>
-              <span style={{ background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: 3, fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+              <span style={{ background: 'var(--gold-gradient)', color: '#fff', padding: '2px 8px', borderRadius: 3, fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', boxShadow: 'var(--gold-glow)' }}>
                 -{product.discount_percentage}%
               </span>
             </>
@@ -214,7 +214,7 @@ export default function ProductCard({ product }: Props) {
                   fontWeight: 700,
                   minWidth: 30,
                   textAlign: 'center',
-                  color: '#0f172a',
+                  color: 'var(--white)',
                 }}
               >
                 {selectedQuantity}
@@ -255,7 +255,7 @@ export default function ProductCard({ product }: Props) {
                 style={{
                   padding: '8px 12px',
                   background: '#e2e8f0',
-                  color: '#475569',
+                  color: 'var(--white)',
                   border: '1px solid #cbd5e1',
                   borderRadius: 4,
                   fontWeight: 600,

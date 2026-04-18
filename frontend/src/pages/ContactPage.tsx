@@ -82,7 +82,7 @@ export default function ContactPage() {
   return (
     <div className="page-container" style={{ maxWidth: 600 }}>
       <h1 style={{ marginBottom: 4 }}>Contact Us</h1>
-      <p style={{ color: 'var(--gray-600)', marginTop: 0, marginBottom: 24 }}>
+      <p style={{ color: 'var(--white)', marginTop: 0, marginBottom: 24 }}>
         Have a question or feedback? We'd love to hear from you.
       </p>
 

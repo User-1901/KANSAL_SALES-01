@@ -77,7 +77,7 @@ export default function CategoriesPage() {
   return (
     <div className="page-container">
       <h1 style={{ marginBottom: 8 }}>Categories</h1>
-      <p style={{ color: 'var(--gray-600)', marginTop: 0 }}>
+      <p style={{ color: 'var(--white)', marginTop: 0 }}>
         Select a category to browse products
       </p>
 

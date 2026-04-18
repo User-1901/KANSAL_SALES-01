@@ -1,35 +1,32 @@
-import pg from 'pg';
+import { PGlite } from '@electric-sql/pglite';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcrypt';
 
-const { Pool } = pg;
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ── Database Connection Pool ──────────────────────────────────────────────────
-// Uses DATABASE_URL env var (standard PostgreSQL connection string)
-// Falls back to localhost for local development
-const pgPool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/zenith_atelier',
-  // For Render: SSL required for external connections
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-});
+// ── Database Connection ───────────────────────────────────────────────────────
+// Uses PGlite for local development (SQLite-based PostgreSQL-compatible)
+// For production, use process.env.DATABASE_URL to connect to real PostgreSQL
+const dbPath = path.resolve(__dirname, '../../pgdata');
 
-pgPool.on('error', (err) => {
-  console.error('[DB] Unexpected error on idle client:', err);
-  process.exit(1);
-});
+let db: PGlite;
+
+async function initDatabase() {
+  db = new PGlite(dbPath);
+  await db.waitReady;
+}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 async function doInit() {
-  const client = await pgPool.connect();
+  await initDatabase();
+
   try {
     // Migration tracking table
-    await client.query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS _migrations (
         filename   VARCHAR(255) PRIMARY KEY,
         applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -42,20 +39,21 @@ async function doInit() {
       : [];
 
     // Check if users table already exists (pre-migration-tracker DB)
-    const usersExists = await client.query(`
+    const usersExists = await db.query(`
       SELECT EXISTS (
         SELECT FROM information_schema.tables
         WHERE table_schema = 'public' AND table_name = 'users'
       )
-    `);
-    const migrationsCount = await client.query(
+    `) as { rows: Array<{ exists: boolean }> };
+    
+    const migrationsCount = await db.query(
       `SELECT COUNT(*)::text AS count FROM _migrations`
-    );
+    ) as { rows: Array<{ count: string }> };
 
-    if (usersExists.rows[0].exists && migrationsCount.rows[0].count === '0') {
+    if (usersExists.rows[0]?.exists && migrationsCount.rows[0]?.count === '0') {
       // Existing DB with no tracker — mark all files as already applied
       for (const file of allFiles) {
-        await client.query(
+        await db.query(
           `INSERT INTO _migrations (filename) VALUES ($1) ON CONFLICT DO NOTHING`,
           [file]
         );
@@ -64,15 +62,27 @@ async function doInit() {
     } else {
       // Fresh DB or incremental — run only unapplied migrations
       for (const file of allFiles) {
-        const already = await client.query(
+        const already = await db.query(
           `SELECT filename FROM _migrations WHERE filename = $1`, [file]
-        );
+        ) as { rows: Array<{ filename: string }> };
+        
         if (already.rows.length > 0) continue;
 
-        const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');
+        const sqlContent = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');
         console.log(`[DB] Running migration: ${file}`);
-        await client.query(sql);
-        await client.query(`INSERT INTO _migrations (filename) VALUES ($1)`, [file]);
+        
+        // Split by semicolons and execute each statement separately
+        // (PGlite doesn't support multiple statements in one query)
+        const statements = sqlContent
+          .split(';')
+          .map(stmt => stmt.trim())
+          .filter(stmt => stmt.length > 0);
+        
+        for (const stmt of statements) {
+          await db.query(stmt);
+        }
+        
+        await db.query(`INSERT INTO _migrations (filename) VALUES ($1)`, [file]);
       }
     }
 
@@ -83,7 +93,7 @@ async function doInit() {
     const adminPassword = process.env.ADMIN_PASSWORD ?? 'ChangeMe@123';
     const hash = await bcrypt.hash(adminPassword, 10);
     
-    await client.query(
+    await db.query(
       `INSERT INTO users (email, display_name, password_hash, role, email_verified)
        VALUES ($1, $2, $3, 'admin', TRUE)
        ON CONFLICT (email) DO UPDATE
@@ -93,15 +103,16 @@ async function doInit() {
       [adminEmail, 'Zenith Admin', hash]
     );
     console.log(`[DB] Admin account ready at: ${adminEmail}`);
-  } finally {
-    client.release();
+  } catch (error) {
+    console.error('[DB] Init failed:', error);
+    throw error;
   }
 }
 
 // ── Run init EAGERLY at module load (not lazily on first query) ───────────────
 // This ensures the DB is fully ready before any request arrives.
 export const dbReady: Promise<void> = doInit().catch(err => {
-  console.error('[DB] Init failed:', err);
+  console.error('[DB] Fatal error:', err);
   process.exit(1);
 });
 
@@ -109,10 +120,15 @@ export const dbReady: Promise<void> = doInit().catch(err => {
 export const pool = {
   query: async (text: string, params?: unknown[]) => {
     await dbReady; // wait for init to finish
-    const result = await pgPool.query(text, params);
+    const result = await db.query(text, params) as { rows: Array<Record<string, unknown>> };
     return {
-      rows: result.rows as Record<string, unknown>[],
-      rowCount: result.rowCount ?? 0,
+      rows: result.rows,
+      rowCount: result.rows.length,
     };
+  },
+  end: async () => {
+    if (db) {
+      await db.close();
+    }
   },
 };

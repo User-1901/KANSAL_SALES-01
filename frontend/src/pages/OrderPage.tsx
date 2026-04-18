@@ -50,7 +50,7 @@ export default function OrderPage() {
         <div className="card" style={{ padding: 32, textAlign: 'center' }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>❌</div>
           <h2 style={{ marginTop: 0 }}>Order Not Found</h2>
-          <p style={{ color: 'var(--gray-600)', marginBottom: 24 }}>
+          <p style={{ color: 'var(--white)', marginBottom: 24 }}>
             {error || 'Could not retrieve order details'}
           </p>
           <Link to="/products" className="btn btn-primary" style={{ textDecoration: 'none' }}>
@@ -68,7 +68,7 @@ export default function OrderPage() {
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <div style={{ fontSize: 64, marginBottom: 12 }}>✅</div>
         <h1 style={{ marginTop: 0, marginBottom: 8 }}>Thank You for Your Order!</h1>
-        <p style={{ color: 'var(--gray-600)', fontSize: 15 }}>
+        <p style={{ color: 'var(--white)', fontSize: 15 }}>
           Your payment has been received and your order is being processed.
         </p>
       </div>
@@ -77,11 +77,11 @@ export default function OrderPage() {
       <div className="card" style={{ padding: 24, marginBottom: 20 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
           <div>
-            <div style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 4 }}>Order Number</div>
+            <div style={{ fontSize: 12, color: 'var(--white)', marginBottom: 4 }}>Order Number</div>
             <div style={{ fontSize: 16, fontWeight: 700 }}>{order.id.slice(0, 8).toUpperCase()}</div>
           </div>
           <div>
-            <div style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 4 }}>Status</div>
+            <div style={{ fontSize: 12, color: 'var(--white)', marginBottom: 4 }}>Status</div>
             <div style={{
               fontSize: 16,
               fontWeight: 700,
@@ -110,7 +110,7 @@ export default function OrderPage() {
             >
               <div>
                 <div style={{ fontWeight: 600, marginBottom: 4 }}>{item.product_name}</div>
-                <div style={{ fontSize: 13, color: 'var(--gray-600)' }}>
+                <div style={{ fontSize: 13, color: 'var(--white)' }}>
                   ₹{parseFloat(item.product_price).toFixed(2)} × {item.quantity}
                 </div>
               </div>
@@ -139,7 +139,7 @@ export default function OrderPage() {
       {/* Shipping address card */}
       <div className="card" style={{ padding: 24, marginBottom: 20 }}>
         <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 16 }}>Shipping Address</h3>
-        <div style={{ color: 'var(--gray-800)', lineHeight: 1.6 }}>
+        <div style={{ color: 'var(--white)', lineHeight: 1.6 }}>
           <div style={{ fontWeight: 600, marginBottom: 4 }}>{order.shipping_name}</div>
           <div>{order.shipping_address}</div>
           <div>{order.shipping_city} - {order.shipping_postal_code}</div>

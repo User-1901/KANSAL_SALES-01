@@ -16,6 +16,7 @@ import uploadRouter from './routes/upload.js';
 import ratingsRouter from './routes/ratings.js';
 import checkoutRouter from './routes/checkout.js';
 import deliveryRouter from './routes/delivery.js';
+import inventoryRouter from './routes/inventory.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadsDir = path.resolve(__dirname, '../../uploads');
@@ -88,6 +89,7 @@ app.use('/api/contact', contactRouter);
 
 // Admin Panel
 app.use('/api/admins', adminsRouter);
+app.use('/api/inventory', inventoryRouter);
 
 // File Uploads (product images)
 app.use('/api/upload', uploadRouter);
