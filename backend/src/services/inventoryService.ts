@@ -80,7 +80,8 @@ export async function updateInventoryMetrics(productId: string): Promise<void> {
       [productId, thirtyDaysAgoStr],
     );
 
-    const totalSales30Days = parseInt(salesResult.rows[0]?.total_sales || 0, 10);
+    const salesRow = salesResult.rows[0] as Record<string, unknown> | undefined;
+    const totalSales30Days = parseInt(String(salesRow?.total_sales ?? 0), 10);
 
     // Step 2: Calculate average daily demand (Sales / 30 days)
     const averageDailyDemand = totalSales30Days / 30;
@@ -105,7 +106,8 @@ export async function updateInventoryMetrics(productId: string): Promise<void> {
       throw new Error(`Product ${productId} not found`);
     }
 
-    const currentStock = productResult.rows[0]?.quantity_available || 0;
+    const productRow = productResult.rows[0] as Record<string, unknown> | undefined;
+    const currentStock = parseInt(String(productRow?.quantity_available ?? 0), 10);
 
     // Step 7: Check if stock is low (current < recommended)
     const isLowStock = currentStock < recommendedStock;
@@ -161,18 +163,18 @@ export async function getProductForecast(productId: string): Promise<DemandForec
       return null;
     }
 
-    const row = result.rows[0];
+    const row = result.rows[0] as Record<string, unknown>;
     return {
-      productId: row.product_id,
-      productName: row.product_name,
-      currentStock: row.current_stock,
-      totalSales30Days: row.total_sales_30days,
-      averageDailyDemand: parseFloat(row.average_daily_demand),
-      predictedDemand7Days: parseFloat(row.predicted_demand_next_7days),
-      safetyStock: parseInt(row.safety_stock, 10),
-      recommendedStock: row.recommended_stock_level,
-      isLowStock: row.is_low_stock,
-      lastUpdated: row.last_calculated_at,
+      productId: String(row.product_id),
+      productName: String(row.product_name),
+      currentStock: parseInt(String(row.current_stock), 10),
+      totalSales30Days: parseInt(String(row.total_sales_30days), 10),
+      averageDailyDemand: parseFloat(String(row.average_daily_demand)),
+      predictedDemand7Days: parseFloat(String(row.predicted_demand_next_7days)),
+      safetyStock: parseInt(String(row.safety_stock), 10),
+      recommendedStock: parseInt(String(row.recommended_stock_level), 10),
+      isLowStock: Boolean(row.is_low_stock),
+      lastUpdated: String(row.last_calculated_at),
     };
   } catch (error) {
     console.error('Error fetching forecast:', error);
@@ -202,17 +204,17 @@ export async function getAllForecasts(): Promise<DemandForecast[]> {
        ORDER BY im.is_low_stock DESC, p.name ASC`,
     );
 
-    return result.rows.map(row => ({
-      productId: row.product_id,
-      productName: row.product_name,
-      currentStock: row.current_stock,
-      totalSales30Days: row.total_sales_30days,
-      averageDailyDemand: parseFloat(row.average_daily_demand),
-      predictedDemand7Days: parseFloat(row.predicted_demand_next_7days),
-      safetyStock: parseInt(row.safety_stock, 10),
-      recommendedStock: row.recommended_stock_level,
-      isLowStock: row.is_low_stock,
-      lastUpdated: row.last_calculated_at,
+    return result.rows.map((row: Record<string, unknown>) => ({
+      productId: String(row.product_id),
+      productName: String(row.product_name),
+      currentStock: parseInt(String(row.current_stock), 10),
+      totalSales30Days: parseInt(String(row.total_sales_30days), 10),
+      averageDailyDemand: parseFloat(String(row.average_daily_demand)),
+      predictedDemand7Days: parseFloat(String(row.predicted_demand_next_7days)),
+      safetyStock: parseInt(String(row.safety_stock), 10),
+      recommendedStock: parseInt(String(row.recommended_stock_level), 10),
+      isLowStock: Boolean(row.is_low_stock),
+      lastUpdated: String(row.last_calculated_at),
     }));
   } catch (error) {
     console.error('Error fetching all forecasts:', error);
@@ -243,17 +245,17 @@ export async function getLowStockAlerts(): Promise<DemandForecast[]> {
        ORDER BY (im.recommended_stock_level - p.quantity_available) DESC`,
     );
 
-    return result.rows.map(row => ({
-      productId: row.product_id,
-      productName: row.product_name,
-      currentStock: row.current_stock,
-      totalSales30Days: row.total_sales_30days,
-      averageDailyDemand: parseFloat(row.average_daily_demand),
-      predictedDemand7Days: parseFloat(row.predicted_demand_next_7days),
-      safetyStock: parseInt(row.safety_stock, 10),
-      recommendedStock: row.recommended_stock_level,
-      isLowStock: row.is_low_stock,
-      lastUpdated: row.last_calculated_at,
+    return result.rows.map((row: Record<string, unknown>) => ({
+      productId: String(row.product_id),
+      productName: String(row.product_name),
+      currentStock: parseInt(String(row.current_stock), 10),
+      totalSales30Days: parseInt(String(row.total_sales_30days), 10),
+      averageDailyDemand: parseFloat(String(row.average_daily_demand)),
+      predictedDemand7Days: parseFloat(String(row.predicted_demand_next_7days)),
+      safetyStock: parseInt(String(row.safety_stock), 10),
+      recommendedStock: parseInt(String(row.recommended_stock_level), 10),
+      isLowStock: Boolean(row.is_low_stock),
+      lastUpdated: String(row.last_calculated_at),
     }));
   } catch (error) {
     console.error('Error fetching low stock alerts:', error);
@@ -281,9 +283,9 @@ export async function getProductSalesHistory(
       [productId, startDateStr],
     );
 
-    return result.rows.map(row => ({
-      date: row.sale_date,
-      quantity: parseInt(row.quantity_sold, 10),
+    return result.rows.map((row: Record<string, unknown>) => ({
+      date: String(row.sale_date),
+      quantity: parseInt(String(row.quantity_sold), 10),
     }));
   } catch (error) {
     console.error('Error fetching sales history:', error);
@@ -302,7 +304,8 @@ export async function initializeAllMetrics(): Promise<void> {
     const productsResult = await pool.query(`SELECT id FROM products`);
 
     for (const product of productsResult.rows) {
-      await updateInventoryMetrics(product.id);
+      const row = product as Record<string, unknown>;
+      await updateInventoryMetrics(String(row.id));
     }
 
     console.log('✓ Metrics initialized for all products');

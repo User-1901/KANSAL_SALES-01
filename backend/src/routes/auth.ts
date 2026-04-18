@@ -96,7 +96,7 @@ router.post('/login', async (req: Request, res: Response) => {
     [email],
   );
 
-  const user = result.rows[0] as { id: string; email: string; password_hash: string; role: string } | undefined;
+  const user = result.rows[0] as { id: string; email: string; display_name: string; password_hash: string; role: string } | undefined;
 
   // SECURITY: Use generic error message to prevent email enumeration attacks
   // Don't reveal if email exists or password is wrong - always say "Invalid email or password"

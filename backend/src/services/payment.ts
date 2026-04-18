@@ -173,8 +173,9 @@ export async function completePayment(
       `, [orderId]);
 
       for (const item of itemsResult.rows) {
+        const row = item as Record<string, unknown>;
         // Track the sale in inventory system
-        await trackSale(item.product_id, parseInt(item.quantity, 10));
+        await trackSale(String(row.product_id), parseInt(String(row.quantity), 10));
       }
       console.log(`✓ Sales tracked for order ${orderId}`);
     } catch (error) {
