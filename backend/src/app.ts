@@ -50,18 +50,8 @@ app.use(sanitize);
 // Serve uploaded product images as static files
 app.use('/uploads', express.static(uploadsDir));
 
-// In production, serve the frontend build
-if (process.env.NODE_ENV === 'production') {
-  const frontendBuildPath = path.resolve(__dirname, '../../frontend/dist');
-  app.use(express.static(frontendBuildPath));
-  
-  // SPA fallback: redirect unmatched routes to index.html for React Router
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
-      res.sendFile(path.join(frontendBuildPath, 'index.html'));
-    }
-  });
-}
+// Frontend is deployed separately on Netlify, so we only serve API endpoints
+// (no need to serve frontend build from backend)
 
 // Health check endpoint - used by load balancers and monitoring
 app.get('/health', (_req, res) => {
