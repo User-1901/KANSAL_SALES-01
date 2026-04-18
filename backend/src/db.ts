@@ -15,13 +15,17 @@ const dbPath = path.resolve(__dirname, '../../pgdata');
 
 let pgPool: pg.Pool | null = null;
 let pglite: PGlite | null = null;
-const isProduction = process.env.DATABASE_URL !== undefined;
+
+// In production (Render), DATABASE_URL MUST be set
+// In development, it's optional and defaults to PGlite
+const isProduction = process.env.NODE_ENV === 'production';
+const hasDatabase = process.env.DATABASE_URL !== undefined;
 
 // Helper function to execute queries consistently
 async function executeQuery(text: string, params?: unknown[]) {
-  if (isProduction && pgPool) {
+  if (hasDatabase && pgPool) {
     return await pgPool.query(text, params);
-  } else if (!isProduction && pglite) {
+  } else if (!hasDatabase && pglite) {
     const result = await pglite.query(text, params) as { rows: Array<Record<string, unknown>> };
     return { rows: result.rows, rowCount: result.rows.length };
   }
@@ -29,7 +33,15 @@ async function executeQuery(text: string, params?: unknown[]) {
 }
 
 async function initDatabase() {
-  if (isProduction) {
+  // Production MUST have DATABASE_URL set
+  if (isProduction && !hasDatabase) {
+    throw new Error(
+      '[DB] FATAL: DATABASE_URL environment variable is not set. ' +
+      'On Render, create a PostgreSQL database and add DATABASE_URL to environment variables.'
+    );
+  }
+
+  if (hasDatabase) {
     // Use real PostgreSQL in production
     pgPool = new pg.Pool({
       connectionString: process.env.DATABASE_URL,
@@ -154,9 +166,9 @@ export const pool = {
     };
   },
   end: async () => {
-    if (isProduction && pgPool) {
+    if (hasDatabase && pgPool) {
       await pgPool.end();
-    } else if (!isProduction && pglite) {
+    } else if (!hasDatabase && pglite) {
       await pglite.close();
     }
   },
