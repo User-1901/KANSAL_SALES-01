@@ -4,7 +4,7 @@ import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
 
 // ── ORDER DETAILS PAGE ──────────────────────────────────────────────────────
-// Shows order confirmation and details after payment
+// Shows order confirmation and details after COD order creation
 // Displays order number, items, total, and shipping address
 
 export default function OrderPage() {
@@ -69,7 +69,7 @@ export default function OrderPage() {
         <div style={{ fontSize: 64, marginBottom: 12 }}>✅</div>
         <h1 style={{ marginTop: 0, marginBottom: 8 }}>Thank You for Your Order!</h1>
         <p style={{ color: 'var(--white)', fontSize: 15 }}>
-          Your payment has been received and your order is being processed.
+          Your order has been received. Payment will be collected on delivery.
         </p>
       </div>
 
@@ -134,6 +134,7 @@ export default function OrderPage() {
           <span>Total Amount</span>
           <span style={{ color: 'var(--green-dark)' }}>₹{parseFloat(order.total_amount).toFixed(2)}</span>
         </div>
+        <div style={{ marginTop: 8 }}>Payment Method: Cash on Delivery</div>
       </div>
 
       {/* Shipping address card */}

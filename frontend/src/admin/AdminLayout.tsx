@@ -7,6 +7,7 @@ const NAV = [
   { to: '/admin/products', label: 'Products', icon: '📦', end: false },
   { to: '/admin/categories', label: 'Categories', icon: '🏷️', end: false },
   { to: '/admin/inventory', label: 'Inventory', icon: '📈', end: false },
+  { to: '/admin/orders', label: 'Orders', icon: '🧾', end: false },
   { to: '/admin/ratings', label: 'Reviews', icon: '⭐', end: false },
   { to: '/admin/users', label: 'Accounts', icon: '👥', end: false },
 ];
@@ -26,9 +27,9 @@ export default function AdminLayout() {
       {/* ── Sidebar ── */}
       <aside style={{
         width: 240,
-        background: 'var(--dark-secondary)',
+        background: 'var(--navy)',
         borderRight: '1px solid rgba(212, 175, 55, 0.1)',
-        color: 'var(--white)',
+        color: '#FFFFFF',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 0,
@@ -41,11 +42,12 @@ export default function AdminLayout() {
           padding: '24px 20px 20px',
           borderBottom: '1px solid rgba(212, 175, 55, 0.1)',
         }}>
-          <div style={{ fontSize: 12, color: 'var(--white)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
+          <div style={{ fontSize: 12, color: '#FFFFFF', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
             Admin Panel
           </div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gold)', letterSpacing: '-0.3px', textShadow: '0 0 10px rgba(255, 107, 53, 0.3)' }}>
-            ✨ Zenith Atelier
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 800, color: 'var(--gold)', letterSpacing: '-0.3px' }}>
+            <img src="/uploads/logo.jpeg" alt="Kansal Sales logo" style={{ width: 34, height: 34, objectFit: 'contain', borderRadius: 5 }} />
+            <span>Kansal Sales</span>
           </div>
         </div>
 
@@ -65,7 +67,7 @@ export default function AdminLayout() {
                 marginBottom: 4,
                 fontSize: 14,
                 fontWeight: isActive ? 600 : 400,
-                color: isActive ? 'var(--gold)' : 'var(--white)',
+                color: isActive ? 'var(--gold-light)' : '#FFFFFF',
                 background: isActive ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
                 textDecoration: 'none',
                 transition: 'all 0.15s ease',
@@ -81,7 +83,7 @@ export default function AdminLayout() {
 
         {/* User + logout */}
         <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(212, 175, 55, 0.1)' }}>
-          <div style={{ fontSize: 12, color: 'var(--white)', marginBottom: 6, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          <div style={{ fontSize: 12, color: '#FFFFFF', marginBottom: 6, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             Signed in as
           </div>
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gold)', marginBottom: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

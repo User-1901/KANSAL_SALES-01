@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS orders (
   shipping_phone VARCHAR(20) NOT NULL,
   shipping_address TEXT NOT NULL,
   shipping_city VARCHAR(100) NOT NULL,
+  shipping_state VARCHAR(100) NOT NULL DEFAULT 'Chandigarh',
   shipping_postal_code VARCHAR(20) NOT NULL,
+  payment_method VARCHAR(30) NOT NULL DEFAULT 'COD',
   
   -- Timestamps
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

@@ -10,11 +10,11 @@ router.use(authenticate);
 /** Helper: fetch the full cart for a user */
 async function getCart(userId: string): Promise<{
   userId: string;
-  items: { productId: string; name: string; price: string; quantity: number }[];
+  items: { productId: string; name: string; price: string; quantity_available: number; quantity: number }[];
   total: string;
 }> {
   const result = await pool.query(
-    `SELECT ci.product_id AS "productId", p.name, p.price::text, ci.quantity
+    `SELECT ci.product_id AS "productId", p.name, p.price::text, p.quantity_available, ci.quantity
      FROM cart_items ci
      JOIN products p ON p.id = ci.product_id
      WHERE ci.user_id = $1
@@ -26,6 +26,7 @@ async function getCart(userId: string): Promise<{
     productId: string;
     name: string;
     price: string;
+    quantity_available: number;
     quantity: number;
   }[];
 
@@ -63,11 +64,15 @@ router.post('/items', async (req, res) => {
 
   try {
     // Check product exists
-    const productResult = await pool.query('SELECT id FROM products WHERE id = $1', [
+    const productResult = await pool.query('SELECT id, quantity_available FROM products WHERE id = $1', [
       String(productId).trim(),
     ]);
     if (productResult.rowCount === 0) {
       res.status(404).json({ error: 'Product not found' });
+      return;
+    }
+    if (qty > Number(productResult.rows[0].quantity_available)) {
+      res.status(400).json({ error: `Only ${productResult.rows[0].quantity_available} units are currently available.` });
       return;
     }
 
@@ -99,7 +104,8 @@ router.put('/items/:productId', async (req, res) => {
   try {
     const result = await pool.query(
       `UPDATE cart_items SET quantity = $1
-       WHERE user_id = $2 AND product_id = $3`,
+       WHERE user_id = $2 AND product_id = $3
+         AND $1 <= (SELECT quantity_available FROM products WHERE id = $3)`,
       [qty, req.user!.id, req.params.productId],
     );
 

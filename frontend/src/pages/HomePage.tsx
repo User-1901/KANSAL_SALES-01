@@ -43,12 +43,12 @@ export default function HomePage() {
       {/* HERO SECTION - Welcome banner with elegant gradient background */}
       <section
         style={{
-          background: 'linear-gradient(135deg, var(--dark-secondary) 0%, var(--dark-tertiary) 100%)',
+          background: 'linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%)',
           borderBottom: '2px solid var(--gold)',
-          color: 'var(--white)',
+          color: '#FFFFFF',
           padding: '80px 24px',
           textAlign: 'center',
-          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%), linear-gradient(135deg, var(--dark-secondary) 0%, var(--dark-tertiary) 100%)',
+          backgroundImage: 'linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%)',
         }}
       >
         <h1 style={{ 
@@ -59,13 +59,13 @@ export default function HomePage() {
           color: 'var(--gold)',
           textShadow: '0 0 12px rgba(255, 107, 53, 0.4)',
         }}>
-          Zenith Atelier
+          Kansal Sales
         </h1>
         <p style={{ 
           margin: '0 0 12px', 
           fontSize: 18, 
           opacity: 0.9,
-          color: 'var(--white)',
+          color: '#FFFFFF',
           fontWeight: 300,
           letterSpacing: '0.3px',
         }}>
@@ -75,7 +75,7 @@ export default function HomePage() {
           margin: '0 0 32px',
           fontSize: 15,
           opacity: 0.8,
-          color: 'var(--gray-400)',
+          color: '#D7E6F4',
         }}>
           Curated collections for the discerning individual
         </p>

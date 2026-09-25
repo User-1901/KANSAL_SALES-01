@@ -17,6 +17,7 @@ import ratingsRouter from './routes/ratings.js';
 import checkoutRouter from './routes/checkout.js';
 import deliveryRouter from './routes/delivery.js';
 import inventoryRouter from './routes/inventory.js';
+import adminOrdersRouter from './routes/admin-orders.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadsDir = path.resolve(__dirname, '../../uploads');
@@ -55,13 +56,12 @@ app.use('/uploads', express.static(uploadsDir));
 
 // Health check endpoint - used by load balancers and monitoring
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'Zenith Atelier API' });
+  res.json({ status: 'ok', service: 'Kansal Sales API' });
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
 // API ROUTES - Organized by feature
 // ──────────────────────────────────────────────────────────────────────────────
-
 // Authentication & User Management
 app.use('/api/auth', authRouter);
 
@@ -80,6 +80,7 @@ app.use('/api/contact', contactRouter);
 // Admin Panel
 app.use('/api/admins', adminsRouter);
 app.use('/api/inventory', inventoryRouter);
+app.use('/api/admin/orders', adminOrdersRouter);
 
 // File Uploads (product images)
 app.use('/api/upload', uploadRouter);

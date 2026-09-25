@@ -93,7 +93,7 @@ export default function LoginPage() {
           fontSize: 14,
           color: 'var(--white)',
         }}>
-          Sign in to your Zenith Atelier account
+          Sign in to your Kansal Sales account
         </p>
 
         {/* Error alert — shown if login fails */}

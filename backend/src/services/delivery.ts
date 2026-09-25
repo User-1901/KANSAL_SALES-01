@@ -4,7 +4,7 @@
 
 // List of valid delivery pincodes in Chandigarh
 // Easy to add/remove pincodes - just edit this array
-const VALID_DELIVERY_PINCODES = [
+export const CHANDIGARH_PINCODES = [
   // Chandigarh Union Territory
   '160001', // Sector 1
   '160002', // Sector 2
@@ -66,12 +66,7 @@ const VALID_DELIVERY_PINCODES = [
   '160058', // Sector 58
   '160059', // Sector 59
   '160060', // Sector 60
-  '160061', // Panchkula
-  '160062', // Mohali
-  '160100', // New Chandigarh
-  '160014', // Burail
-  '160014', // Industrial Area Phase 1
-  '160014', // Industrial Area Phase 2
+  '160014', // Burail and Industrial Area
 ];
 
 // ── VALIDATE DELIVERY PINCODE ──────────────────────────────────────────────
@@ -86,12 +81,12 @@ export function validateDeliveryPincode(pincode: string): { isValid: boolean; me
     return { isValid: false, message: 'Please enter a valid 6-digit pincode' };
   }
 
-  const isValid = VALID_DELIVERY_PINCODES.includes(pincode.trim());
+  const isValid = CHANDIGARH_PINCODES.includes(pincode.trim());
 
   if (!isValid) {
     return {
       isValid: false,
-      message: 'Sorry we are not available in that area, will reach you soon'
+      message: 'Sorry, we currently deliver only within Chandigarh.'
     };
   }
 
@@ -101,7 +96,7 @@ export function validateDeliveryPincode(pincode: string): { isValid: boolean; me
 // ── GET VALID DELIVERY PINCODES ────────────────────────────────────────────
 // Returns list of all valid delivery pincodes
 export function getValidDeliveryPincodes(): string[] {
-  return VALID_DELIVERY_PINCODES;
+  return CHANDIGARH_PINCODES;
 }
 
 // ── GET PINCODE SUGGESTIONS ────────────────────────────────────────────────
@@ -112,7 +107,7 @@ export function getDeliveryPincodeSuggestions(query: string): string[] {
   }
 
   const normalized = query.trim();
-  return VALID_DELIVERY_PINCODES
+  return CHANDIGARH_PINCODES
     .filter(pincode => pincode.includes(normalized))
     .slice(0, 10);  // Return top 10 suggestions
 }

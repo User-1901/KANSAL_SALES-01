@@ -36,19 +36,22 @@ export default function NavBar() {
         position: 'sticky',  // Stay at top when scrolling
         top: 0,
         zIndex: 100,
-        background: 'var(--dark-secondary)',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.40)',
+        background: 'var(--navy)',
+        boxShadow: '0 4px 16px rgba(11,45,80,0.22)',
         height: 'var(--nav-height)',
         display: 'flex',
         alignItems: 'center',
         padding: '0 24px',
-        borderBottom: '1px solid rgba(212, 175, 55, 0.1)',
+        borderBottom: '2px solid var(--gold)',
       }}
     >
       {/* ── BRAND LOGO ── */}
       <Link
         to="/"
         style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 10,
           fontWeight: 700,
           fontSize: 20,
           color: 'var(--gold)',
@@ -57,7 +60,8 @@ export default function NavBar() {
           letterSpacing: '-0.3px',
         }}
       >
-        ✨ Zenith Atelier
+        <img src="/uploads/logo.jpeg" alt="Kansal Sales logo" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: 6 }} />
+        <span>Kansal Sales</span>
       </Link>
 
       {/* ── NAVIGATION LINKS & USER SECTION ── */}
@@ -76,7 +80,7 @@ export default function NavBar() {
             style={{
               padding: '6px 12px',
               borderRadius: 'var(--radius-sm)',
-              color: 'var(--light-text)',
+              color: '#FFFFFF',
               fontWeight: 500,
               fontSize: 14,
               textDecoration: 'none',
@@ -87,7 +91,7 @@ export default function NavBar() {
               (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = 'var(--light-text)';
+              (e.currentTarget as HTMLAnchorElement).style.color = '#FFFFFF';
               (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent';
             }}
           >
@@ -103,7 +107,7 @@ export default function NavBar() {
             position: 'relative',  // For positioning cart badge
             padding: '6px 12px',
             borderRadius: 'var(--radius-sm)',
-            color: 'var(--light-text)',
+            color: '#FFFFFF',
             fontWeight: 500,
             fontSize: 14,
             textDecoration: 'none',

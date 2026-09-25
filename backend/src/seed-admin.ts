@@ -14,8 +14,11 @@ const dbPath = path.resolve(__dirname, '../../pgdata');
 const db = new PGlite(dbPath);
 await db.waitReady;
 
-const email = '1234@gmail.com';
-const plainPassword = '1234';
+const email = process.env.ADMIN_EMAIL;
+const plainPassword = process.env.ADMIN_PASSWORD;
+if (!email || !plainPassword) {
+  throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be set before running seed:admin.');
+}
 const hash = await bcrypt.hash(plainPassword, 10);
 
 await db.query(
@@ -25,12 +28,11 @@ await db.query(
      SET password_hash  = EXCLUDED.password_hash,
          role           = 'admin',
          email_verified = TRUE`,
-  [email, 'Zenith Admin', hash],
+  [email, 'Kansal Sales Admin', hash],
 );
 
 console.log('✅ Admin upserted successfully');
 console.log(`   Email:    ${email}`);
-console.log(`   Password: ${plainPassword}`);
 
 await db.close();
 process.exit(0);

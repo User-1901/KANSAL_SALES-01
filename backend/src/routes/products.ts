@@ -157,6 +157,9 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
     const discountNum = Number(discount_percentage);
     if (isNaN(discountNum) || discountNum < 0 || discountNum > 100) errors.push('discount_percentage must be between 0 and 100');
   }
+  if (stock_status !== undefined && quantity_available === undefined) {
+    errors.push('stock_status is derived from quantity_available');
+  }
 
   if (errors.length > 0) {
     res.status(400).json({ errors });
@@ -184,10 +187,6 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
     setClauses.push(`quantity_available = $${params.length}`);
     // Auto-set stock_status based on quantity
     params.push(qtyNum === 0 ? 'out_of_stock' : 'in_stock');
-    setClauses.push(`stock_status = $${params.length}`);
-  }
-  if (stock_status !== undefined && quantity_available === undefined) {
-    params.push(stock_status);
     setClauses.push(`stock_status = $${params.length}`);
   }
   if (category_id !== undefined) {

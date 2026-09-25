@@ -119,7 +119,7 @@ export default function RegisterPage() {
             fontSize: 24,
             fontWeight: 800,
           }}>
-            Welcome to Zenith Atelier
+            Welcome to Kansal Sales
           </h2>
           <p style={{ 
             color: 'var(--white)',
@@ -177,7 +177,7 @@ export default function RegisterPage() {
           fontWeight: 800,
           letterSpacing: '-0.3px',
         }}>
-          Join Zenith Atelier
+            Join Kansal Sales
         </h1>
         <p style={{
           margin: '0 0 28px',

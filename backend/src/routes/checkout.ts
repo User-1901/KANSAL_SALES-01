@@ -1,14 +1,12 @@
 import { Router, Request, Response } from 'express';
 import { authenticate } from '../middleware/auth.js';
-import { createPaymentOrder, verifyPaymentSignature, completePayment, getOrderDetails } from '../services/payment.js';
+import { CheckoutError, createCashOnDeliveryOrder, getOrderDetails } from '../services/payment.js';
 import { pool } from '../db.js';
 
 // ── ROUTER SETUP ────────────────────────────────────────────────────────────
 const router = Router();
 
-// ── POST /api/checkout - Create order for payment ───────────────────────────
-// Takes shipping info from request, creates order in DB and Razorpay
-// Returns Razorpay key and order details
+// ── POST /api/checkout - Create a COD order ─────────────────────────────────
 router.post('/api/checkout', authenticate, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
@@ -17,7 +15,7 @@ router.post('/api/checkout', authenticate, async (req: Request, res: Response) =
     // Validate shipping info
     if (!shippingInfo || !shippingInfo.shipping_name || !shippingInfo.shipping_email ||
         !shippingInfo.shipping_phone || !shippingInfo.shipping_address || 
-        !shippingInfo.shipping_city || !shippingInfo.shipping_postal_code) {
+        !shippingInfo.shipping_city || !shippingInfo.shipping_state || !shippingInfo.shipping_postal_code) {
       return res.status(400).json({ error: 'Incomplete shipping information' });
     }
 
@@ -25,55 +23,18 @@ router.post('/api/checkout', authenticate, async (req: Request, res: Response) =
       return res.status(400).json({ error: 'Cart is empty' });
     }
 
-    // Create payment order
-    const orderResponse = await createPaymentOrder(userId, cartItems, shippingInfo);
+    const orderResponse = await createCashOnDeliveryOrder(userId, cartItems, shippingInfo);
     
     res.json(orderResponse);
   } catch (error: any) {
     console.error('Checkout error:', error);
     
     // Handle delivery area errors with specific message
-    if (error.message && error.message.includes('not available')) {
-      return res.status(400).json({ error: error.message });
+    if (error instanceof CheckoutError) {
+      return res.status(error.statusCode).json({ error: error.message });
     }
     
     res.status(500).json({ error: 'Failed to create order' });
-  }
-});
-
-// ── POST /api/checkout/verify - Verify payment and complete order ──────────
-// Called after Razorpay payment is completed on frontend
-// Verifies signature, marks order as paid, clears cart
-router.post('/api/checkout/verify', authenticate, async (req: Request, res: Response) => {
-  try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).json({ error: 'Missing payment details' });
-    }
-
-    // Verify Razorpay signature
-    const isValid = await verifyPaymentSignature({
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-    });
-
-    if (!isValid) {
-      return res.status(400).json({ error: 'Payment verification failed' });
-    }
-
-    // Complete payment and update order
-    const order = await completePayment(razorpay_order_id, razorpay_payment_id, razorpay_signature);
-
-    res.json({
-      success: true,
-      message: 'Payment verified and order confirmed',
-      order,
-    });
-  } catch (error) {
-    console.error('Payment verification error:', error);
-    res.status(500).json({ error: 'Failed to verify payment' });
   }
 });
 

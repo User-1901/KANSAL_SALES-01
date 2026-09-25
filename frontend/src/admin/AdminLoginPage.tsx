@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>✨</div>
           <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
-            Zenith Atelier
+            Kansal Sales
           </div>
           <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: 'var(--gold)', letterSpacing: '-0.3px', textShadow: '0 0 12px rgba(255, 107, 53, 0.4)' }}>
             Admin Portal

@@ -1,29 +1,29 @@
 /* ══════════════════════════════════════════════════════════════════════════════
-   ZENITH ATELIER - PREMIUM CLOTHING BRAND DESIGN SYSTEM
-   Dark + Elegant Gold Theme - Modern Luxury Aesthetic for Premium Fashion
+  KANSAL SALES - WHITE, BLUE AND GOLD DESIGN SYSTEM
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── PRIMARY COLORS: Vibrant Orange + Dark Theme ────────────────────────────── */
-  /* Orange: Modern, energetic, contemporary accent */
-  --gold: #FF6B35;              /* Vibrant orange - primary accent */
-  --gold-dark: #E55100;         /* Darker orange for accents */
-  --gold-light: #FFB088;        /* Light orange for subtle backgrounds */
-  --gold-pale: #FFF1E6;         /* Pale orange background */
+  /* ── PRIMARY COLORS: Navy blue with warm gold accents ─────────────────────── */
+  --gold: #C9A227;
+  --gold-dark: #9A7410;
+  --gold-light: #E6C65C;
+  --gold-pale: #FFF8DD;
   
   /* Gradient Blends: Classy orange-to-black transitions */
-  --gold-gradient: linear-gradient(135deg, #FF6B35 0%, #E55100 50%, #000000 100%);
-  --gold-gradient-soft: linear-gradient(135deg, #FF6B35 0%, #FF8855 40%, #0A0A0A 100%);
-  --gold-gradient-accent: linear-gradient(90deg, #FF6B35, #E55100);
-  --gold-glow: 0 0 20px rgba(255, 107, 53, 0.4), 0 0 40px rgba(255, 107, 53, 0.2);
+  --gold-gradient: linear-gradient(135deg, #E6C65C 0%, #C9A227 50%, #9A7410 100%);
+  --gold-gradient-soft: linear-gradient(135deg, #FFF8DD 0%, #E6C65C 100%);
+  --gold-gradient-accent: linear-gradient(90deg, #C9A227, #E6C65C);
+  --gold-glow: 0 0 20px rgba(201, 162, 39, 0.22), 0 0 40px rgba(201, 162, 39, 0.12);
+  --navy: #0B2D50;
+  --navy-light: #164A78;
 
-  /* Dark Theme: Professional, sophisticated, elegant */
-  --dark: #000000;              /* Pure black - main background */
-  --dark-secondary: #0A0A0A;    /* Stealth black - secondary backgrounds */
-  --dark-tertiary: #121212;     /* Slightly lighter stealth black - cards, components */
+  /* White and navy surfaces */
+  --dark: #F5F8FC;
+  --dark-secondary: #EAF1F8;
+  --dark-tertiary: #EEF4FA;
   
   /* Neutral Colors: Complementary to dark theme */
-  --white: #FFFFFF;             /* Pure white - text, highlights */
+  --white: #102A43;             /* Primary navy text */
   --gray-50: #F9FAFB;           /* Very light gray - alternate backgrounds */
   --gray-100: #F3F4F6;          /* Light gray */
   --gray-200: #E5E7EB;          /* Medium light gray */
@@ -31,7 +31,7 @@
   --gray-400: #9CA3AF;          /* Medium-dark gray */
   --gray-500: #6B7280;          /* Dark gray - text on light bg */
   --gray-600: #4B5563;          /* Very dark gray */
-  --light-text: #E8E9EC;        /* Light text for dark backgrounds */
+  --light-text: #1E3A5F;        /* Blue text */
 
   /* STATUS COLORS: Alerts, messages ───────────────────────────────────────── */
   --success: #10B981;           /* Success - green */
@@ -49,10 +49,10 @@
   --info-light: #EFF6FF;        /* Info background */
 
   /* SPACING & SHADOWS ───────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.40);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,0.50);
-  --shadow-inner: inset 0 2px 4px rgba(255,255,255,0.05);
+  --shadow-sm: 0 1px 3px rgba(16,42,67,0.10), 0 1px 2px rgba(16,42,67,0.06);
+  --shadow-md: 0 4px 16px rgba(16,42,67,0.12);
+  --shadow-lg: 0 10px 40px rgba(16,42,67,0.16);
+  --shadow-inner: inset 0 2px 4px rgba(16,42,67,0.05);
   
   --radius: 12px;               /* Standard border radius */
   --radius-sm: 8px;             /* Small border radius */
@@ -70,7 +70,7 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 15px;
   
-  /* Dark theme defaults */
+  /* Light theme defaults */
   color: var(--light-text);
   background: var(--dark);
   line-height: 1.6;

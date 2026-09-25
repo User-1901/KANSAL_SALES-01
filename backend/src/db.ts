@@ -128,8 +128,11 @@ async function doInit() {
     // ── Seed Default Admin Account ────────────────────────────────────────────────
     // SECURITY: Change these credentials immediately in production!
     // Replace with environment variables for real deployments
-    const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@zenith-atelier.com';
-    const adminPassword = process.env.ADMIN_PASSWORD ?? 'ChangeMe@123';
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminEmail || !adminPassword) {
+      throw new Error('[DB] ADMIN_EMAIL and ADMIN_PASSWORD must be set before starting the server.');
+    }
     const hash = await bcrypt.hash(adminPassword, 10);
     
     await executeQuery(
@@ -139,7 +142,7 @@ async function doInit() {
          SET password_hash  = EXCLUDED.password_hash,
              role           = 'admin',
              email_verified = TRUE`,
-      [adminEmail, 'Zenith Admin', hash]
+      [adminEmail, 'Kansal Sales Admin', hash]
     );
     console.log(`[DB] Admin account ready at: ${adminEmail}`);
   } catch (error) {

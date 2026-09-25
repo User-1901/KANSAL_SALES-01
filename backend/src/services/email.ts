@@ -21,13 +21,13 @@ export async function sendVerificationEmail(to: string, displayName: string): Pr
     await transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: 'Welcome to Zenith Atelier - Verify Your Account',
-      text: `Hi ${displayName},\n\nThank you for registering with Zenith Atelier. Please verify your email address to activate your account.\n\nBest regards,\nZenith Atelier Team`,
+      subject: 'Welcome to Kansal Sales - Verify Your Account',
+      text: `Hi ${displayName},\n\nThank you for registering with Kansal Sales. Please verify your email address to activate your account.\n\nBest regards,\nKansal Sales Team`,
       html: `
         <p>Hi ${displayName},</p>
-        <p>Thank you for registering with <strong>Zenith Atelier</strong>.</p>
+        <p>Thank you for registering with <strong>Kansal Sales</strong>.</p>
         <p>Please verify your email address to activate your account and enjoy our premium collection.</p>
-        <p>Best regards,<br>Zenith Atelier Team</p>
+        <p>Best regards,<br>Kansal Sales Team</p>
       `,
     });
   } catch (error) {
@@ -66,15 +66,15 @@ export async function sendPasswordResetEmail(to: string, resetLink: string): Pro
     await transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: 'Reset Your Zenith Atelier Password',
-      text: `You requested a password reset.\n\nClick the link below to reset your password (valid for 1 hour):\n${resetLink}\n\nIf you did not request this, ignore this email.\n\nZenith Atelier Security Team`,
+      subject: 'Reset Your Kansal Sales Password',
+      text: `You requested a password reset.\n\nClick the link below to reset your password (valid for 1 hour):\n${resetLink}\n\nIf you did not request this, ignore this email.\n\nKansal Sales Security Team`,
       html: `
         <p>You requested a password reset.</p>
         <p>Click the button below to reset your password. This link is valid for <strong>1 hour only</strong>.</p>
         <p><a href="${resetLink}" style="display:inline-block;padding:12px 24px;background:#D4AF37;color:#0F1419;border-radius:8px;text-decoration:none;font-weight:bold;">Reset Password</a></p>
         <p>Or copy this link: <a href="${resetLink}">${resetLink}</a></p>
         <p><strong>Security Notice:</strong> If you did not request this, you can safely ignore this email.</p>
-        <p>Zenith Atelier Security Team</p>
+        <p>Kansal Sales Security Team</p>
       `,
     });
   } catch (error) {

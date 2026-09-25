@@ -1,438 +1,146 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
 
-// ── SHIPPING FORM DATA STRUCTURE ────────────────────────────────────────────
 interface ShippingInfo {
   shipping_name: string;
   shipping_email: string;
   shipping_phone: string;
   shipping_address: string;
   shipping_city: string;
+  shipping_state: string;
   shipping_postal_code: string;
 }
 
-// ── CART ITEM STRUCTURE ─────────────────────────────────────────────────────
 interface CartItem {
   productId: string;
+  name: string;
+  price: string;
   quantity: number;
-  product_id?: string;  // From API response
-  name?: string;
-  price?: string;
-  discount_percentage?: number;  // Discount percentage if any
+  discount_percentage?: number;
 }
 
-// ── CHECKOUT PAGE COMPONENT ────────────────────────────────────────────────
-// Complete checkout flow:
-// 1. Load user's cart from database
-// 2. Show shipping form and cart summary
-// 3. Create order via API
-// 4. Open Razorpay payment gateway
-// 5. Verify payment signature
-// 6. Show order confirmation
-
 export default function CheckoutPage() {
-  // ── AUTH & ROUTING ──────────────────────────────────────────────────────
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  // ── CART STATE ──────────────────────────────────────────────────────────
-  const [cartItems, setCartItems] = useState<Array<any>>([]);        // Items in cart
-  const [cartTotal, setCartTotal] = useState(0);                     // Total price
-  const [loadingCart, setLoadingCart] = useState(true);              // Loading cart from API
-
-  // ── SHIPPING FORM STATE ─────────────────────────────────────────────────
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartTotal, setCartTotal] = useState(0);
+  const [loadingCart, setLoadingCart] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState('');
   const [shipping, setShipping] = useState<ShippingInfo>({
     shipping_name: user?.displayName || '',
     shipping_email: user?.email || '',
     shipping_phone: '',
     shipping_address: '',
-    shipping_city: '',
+    shipping_city: 'Chandigarh',
+    shipping_state: 'Chandigarh',
     shipping_postal_code: '',
   });
 
-  // ── PAYMENT PROCESSING STATE ────────────────────────────────────────────
-  const [processing, setProcessing] = useState(false);               // Creating order
-  const [paymentError, setPaymentError] = useState('');              // Payment error message
-
-  // ── LOAD CART ON PAGE LOAD ─────────────────────────────────────────────
-  // Fetch cart items from user's database cart, including product discount info
   useEffect(() => {
     async function loadCart() {
       try {
-        const res = await api.get('/api/cart');
-        const items = res.data.items || [];
-        
-        // Fetch product details to get discount info for each item
-        const enrichedItems = await Promise.all(
-          items.map(async (item: any) => {
-            try {
-              const productRes = await api.get(`/api/products/${item.productId}`);
-              return {
-                ...item,
-                discount_percentage: productRes.data.discount_percentage || 0,
-              };
-            } catch {
-              return item;
-            }
-          })
-        );
-        
-        setCartItems(enrichedItems);
-        
-        // Calculate total with discounts
-        const total = enrichedItems.reduce((sum: number, item: any) => {
-          const originalPrice = parseFloat(item.price);
+        const response = await api.get('/api/cart');
+        const items = (response.data.items || []) as CartItem[];
+        const enriched = await Promise.all(items.map(async item => {
+          try {
+            const product = await api.get(`/api/products/${item.productId}`);
+            return { ...item, discount_percentage: product.data.discount_percentage || 0 };
+          } catch {
+            return item;
+          }
+        }));
+        setCartItems(enriched);
+        setCartTotal(enriched.reduce((total, item) => {
+          const price = Number(item.price);
           const discount = item.discount_percentage || 0;
-          const discountedPrice = discount > 0
-            ? originalPrice - (originalPrice * discount / 100)
-            : originalPrice;
-          return sum + (discountedPrice * item.quantity);
-        }, 0);
-        setCartTotal(total);
-      } catch (error) {
-        console.error('Failed to load cart:', error);
-        setPaymentError('Failed to load cart');
+          return total + (price - price * discount / 100) * item.quantity;
+        }, 0));
+      } catch {
+        setError('Failed to load cart.');
       } finally {
         setLoadingCart(false);
       }
     }
-
-    if (user) {
-      loadCart();
-    }
+    if (user) loadCart();
   }, [user]);
 
-  // ── REDIRECT IF NOT LOGGED IN ──────────────────────────────────────────
   if (!user) {
-    return (
-      <div className="page-container" style={{ maxWidth: 600, paddingTop: 48 }}>
-        <div className="card" style={{ padding: 32, textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>🔐</div>
-          <h2 style={{ marginTop: 0 }}>Login Required</h2>
-          <p style={{ color: 'var(--gray-600)', marginBottom: 24 }}>
-            Please log in to proceed with checkout.
-          </p>
-          <button
-            onClick={() => navigate('/login')}
-            className="btn btn-primary"
-            style={{ padding: '10px 28px' }}
-          >
-            Go to Login
-          </button>
-        </div>
-      </div>
-    );
+    return <div className="page-container"><div className="card" style={{ padding: 32, textAlign: 'center' }}><h2>Login Required</h2><p>Please log in to proceed with checkout.</p><button className="btn btn-primary" onClick={() => navigate('/login')}>Go to Login</button></div></div>;
   }
 
-  // ── REDIRECT IF CART IS EMPTY ──────────────────────────────────────────
   if (!loadingCart && cartItems.length === 0) {
-    return (
-      <div className="page-container" style={{ maxWidth: 600, paddingTop: 48 }}>
-        <div className="card" style={{ padding: 32, textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>🛒</div>
-          <h2 style={{ marginTop: 0 }}>Your Cart is Empty</h2>
-          <p style={{ color: 'var(--gray-600)', marginBottom: 24 }}>
-            Add some products to your cart before checking out.
-          </p>
-          <button
-            onClick={() => navigate('/products')}
-            className="btn btn-primary"
-            style={{ padding: '10px 28px' }}
-          >
-            Continue Shopping
-          </button>
-        </div>
-      </div>
-    );
+    return <div className="page-container"><div className="card" style={{ padding: 32, textAlign: 'center' }}><h2>Your Cart is Empty</h2><button className="btn btn-primary" onClick={() => navigate('/products')}>Continue Shopping</button></div></div>;
   }
 
-  // ── HANDLE FORM INPUT CHANGE ────────────────────────────────────────────
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value } = e.target;
-    setShipping(prev => ({ ...prev, [name]: value }));
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const { name, value } = event.target;
+    setShipping(previous => ({ ...previous, [name]: value }));
   }
 
-  // ── HANDLE PAYMENT (RAZORPAY) ────────────────────────────────────────────
-  async function handlePayment() {
-    // Validate shipping form
-    if (!shipping.shipping_name || !shipping.shipping_email || !shipping.shipping_phone ||
-        !shipping.shipping_address || !shipping.shipping_city || !shipping.shipping_postal_code) {
-      setPaymentError('Please fill in all shipping details');
+  async function placeOrder() {
+    if (Object.values(shipping).some(value => !value.trim())) {
+      setError('Please fill in all customer and delivery details.');
+      return;
+    }
+    if (!/^\d{6}$/.test(shipping.shipping_postal_code)) {
+      setError('Sorry, we currently deliver only within Chandigarh.');
       return;
     }
 
     setProcessing(true);
-    setPaymentError('');
-
+    setError('');
     try {
-      // ── STEP 1: CREATE ORDER VIA BACKEND ──────────────────────────────
-      const checkoutRes = await api.post('/api/checkout', {
+      const response = await api.post('/api/checkout', {
         shippingInfo: shipping,
-        cartItems: cartItems.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-        })),
+        cartItems: cartItems.map(item => ({ productId: item.productId, quantity: item.quantity })),
       });
-
-      const { razorpay_key, razorpay_order_id, amount } = checkoutRes.data;
-
-      // ── STEP 2: INITIALIZE RAZORPAY ───────────────────────────────────
-      // Load Razorpay script dynamically
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.async = true;
-
-      script.onload = async () => {
-        // Razorpay options
-        const options: any = {
-          key: razorpay_key,
-          amount: amount * 100, // Convert to paise
-          currency: 'INR',
-          order_id: razorpay_order_id,
-          
-          // Payment successful
-          handler: async function (response: any) {
-            try {
-              // ── STEP 3: VERIFY PAYMENT SIGNATURE ──────────────────────
-              const verifyRes = await api.post('/api/checkout/verify', {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              });
-
-              // ── STEP 4: SHOW SUCCESS AND REDIRECT ─────────────────────
-              alert('✅ Payment successful! Your order has been confirmed.');
-              navigate(`/orders/${verifyRes.data.order.id}`, { replace: true });
-            } catch (err) {
-              setPaymentError('Payment verification failed. Please contact support.');
-            } finally {
-              setProcessing(false);
-            }
-          },
-
-          // Payment failed
-          prefill: {
-            name: shipping.shipping_name,
-            email: shipping.shipping_email,
-            contact: shipping.shipping_phone,
-          },
-
-          // Payment modal theme
-          theme: {
-            color: 'var(--green)',
-          },
-        };
-
-        // Open Razorpay payment modal
-        const razorpayInstance = new (window as any).Razorpay(options);
-        razorpayInstance.open();
-      };
-
-      document.body.appendChild(script);
-    } catch (error: any) {
-      setPaymentError(error.response?.data?.error || 'Failed to create order. Please try again.');
+      navigate(`/orders/${response.data.order.id}`, { replace: true });
+    } catch (requestError: any) {
+      setError(requestError.response?.data?.error || "We couldn't place your order. Please try again.");
+    } finally {
       setProcessing(false);
     }
   }
 
-  // ── RENDER CHECKOUT PAGE ────────────────────────────────────────────────
   return (
     <div className="page-container" style={{ maxWidth: 900, paddingTop: 32 }}>
-      <h1 style={{ marginBottom: 32 }}>Checkout</h1>
-
-      {/* Error message */}
-      {paymentError && <div className="alert alert-error">{paymentError}</div>}
-
+      <h1>Checkout</h1>
+      {error && <div className="alert alert-error">{error}</div>}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
-        
-        {/* ── LEFT COLUMN: SHIPPING FORM ── */}
         <div className="card" style={{ padding: 24 }}>
-          <h2 style={{ marginTop: 0, marginBottom: 20, fontSize: 20 }}>Shipping Address</h2>
-
-          {/* Full Name */}
+          <h2 style={{ marginTop: 0 }}>Delivery Details</h2>
+          {[
+            ['shipping_name', 'Full Name', 'text'],
+            ['shipping_email', 'Email', 'email'],
+            ['shipping_phone', 'Mobile Number', 'tel'],
+            ['shipping_city', 'City', 'text'],
+            ['shipping_state', 'State', 'text'],
+            ['shipping_postal_code', 'Pincode', 'text'],
+          ].map(([name, label, type]) => (
+            <div className="form-group" key={name}>
+              <label htmlFor={name}>{label}</label>
+              <input id={name} name={name} type={type} value={shipping[name as keyof ShippingInfo]} onChange={handleInputChange} required maxLength={name === 'shipping_postal_code' ? 6 : undefined} />
+            </div>
+          ))}
           <div className="form-group">
-            <label htmlFor="shipping_name">Full Name</label>
-            <input
-              id="shipping_name"
-              type="text"
-              name="shipping_name"
-              value={shipping.shipping_name}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          {/* Email */}
-          <div className="form-group">
-            <label htmlFor="shipping_email">Email</label>
-            <input
-              id="shipping_email"
-              type="email"
-              name="shipping_email"
-              value={shipping.shipping_email}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          {/* Phone */}
-          <div className="form-group">
-            <label htmlFor="shipping_phone">Phone Number</label>
-            <input
-              id="shipping_phone"
-              type="tel"
-              name="shipping_phone"
-              placeholder="10-digit mobile number"
-              value={shipping.shipping_phone}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          {/* Address */}
-          <div className="form-group">
-            <label htmlFor="shipping_address">Street Address</label>
-            <textarea
-              id="shipping_address"
-              name="shipping_address"
-              placeholder="House No., Building Name, Street"
-              rows={3}
-              value={shipping.shipping_address}
-              onChange={handleInputChange}
-              required
-              style={{ resize: 'vertical' }}
-            />
-          </div>
-
-          {/* City */}
-          <div className="form-group">
-            <label htmlFor="shipping_city">City</label>
-            <input
-              id="shipping_city"
-              type="text"
-              name="shipping_city"
-              value={shipping.shipping_city}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          {/* Postal Code */}
-          <div className="form-group">
-            <label htmlFor="shipping_postal_code">
-              Postal Code <span style={{ color: '#FF6B35' }}>*</span> (Chandigarh only)
-            </label>
-            <input
-              id="shipping_postal_code"
-              type="text"
-              name="shipping_postal_code"
-              placeholder="Enter 6-digit pincode (e.g., 160001)"
-              value={shipping.shipping_postal_code}
-              onChange={handleInputChange}
-              maxLength={6}
-              pattern="\d{6}"
-              required
-              title="Please enter a valid 6-digit pincode"
-            />
-            {shipping.shipping_postal_code && !/^\d{6}$/.test(shipping.shipping_postal_code) && (
-              <div style={{ color: '#dc2626', fontSize: 12, marginTop: 4 }}>
-                ⚠ Please enter a valid 6-digit pincode
-              </div>
-            )}
+            <label htmlFor="shipping_address">Full Address</label>
+            <textarea id="shipping_address" name="shipping_address" rows={3} value={shipping.shipping_address} onChange={handleInputChange} required />
           </div>
         </div>
-
-        {/* ── RIGHT COLUMN: ORDER SUMMARY ── */}
-        <div>
-          <div className="card" style={{ padding: 24, marginBottom: 20 }}>
-            <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 20 }}>Order Summary</h2>
-
-            {/* Loading cart */}
-            {loadingCart ? (
-              <p>Loading cart...</p>
-            ) : (
-              <>
-                {/* Cart items list */}
-                <div style={{ marginBottom: 20 }}>
-                  {cartItems.map(item => {
-                    const originalPrice = parseFloat(item.price || '0');
-                    const discount = item.discount_percentage || 0;
-                    const discountedPrice = discount > 0
-                      ? originalPrice - (originalPrice * discount / 100)
-                      : originalPrice;
-                    
-                    return (
-                      <div
-                        key={item.product_id}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          padding: '12px 0',
-                          borderBottom: '1px solid #f1f5f9',
-                        }}
-                      >
-                        <div>
-                          <div style={{ fontWeight: 600, marginBottom: 4 }}>{item.name}</div>
-                          <div style={{ fontSize: 13, color: 'var(--white)', display: 'flex', gap: 8, alignItems: 'center' }}>
-                            <span>₹{discountedPrice.toFixed(2)}</span>
-                            {discount > 0 && (
-                              <>
-                                <span style={{ textDecoration: 'line-through' }}>₹{originalPrice.toFixed(2)}</span>
-                                <span style={{ background: 'var(--gold-gradient)', color: '#fff', padding: '2px 6px', borderRadius: 2, fontSize: 11, fontWeight: 700, boxShadow: 'var(--gold-glow)' }}>
-                                  -{discount}%
-                                </span>
-                              </>
-                            )}
-                            <span>× {item.quantity}</span>
-                          </div>
-                        </div>
-                        <div style={{ fontWeight: 600 }}>
-                          ₹{(discountedPrice * item.quantity).toFixed(2)}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Divider */}
-                <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: 12, marginBottom: 12 }} />
-
-                {/* Total */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontSize: 18,
-                    fontWeight: 700,
-                    marginBottom: 20,
-                  }}
-                >
-                  <span>Total Amount:</span>
-                  <span style={{ color: 'var(--green-dark)' }}>₹{cartTotal.toFixed(2)}</span>
-                </div>
-
-                {/* Pay button */}
-                <button
-                  className="btn btn-primary"
-                  style={{ width: '100%', padding: '12px', fontSize: 15, fontWeight: 600 }}
-                  onClick={handlePayment}
-                  disabled={processing}
-                >
-                  {processing ? 'Processing...' : 'Proceed to Payment'}
-                </button>
-
-                {/* Security info */}
-                <div style={{ marginTop: 16, padding: 12, background: '#f0fdf4', borderRadius: 6 }}>
-                  <div style={{ fontSize: 13, color: 'var(--white)', display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <span>🔒</span>
-                    <span>Secured by Razorpay. Your card details are safe.</span>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
+        <div className="card" style={{ padding: 24, alignSelf: 'start' }}>
+          <h2 style={{ marginTop: 0 }}>Order Summary</h2>
+          {loadingCart ? <p>Loading cart...</p> : cartItems.map(item => {
+            const price = Number(item.price);
+            const discountedPrice = price - price * (item.discount_percentage || 0) / 100;
+            return <div key={item.productId} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}><span>{item.name} x {item.quantity}</span><strong>₹{(discountedPrice * item.quantity).toFixed(2)}</strong></div>;
+          })}
+          <hr />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 18, fontWeight: 700 }}><span>Total</span><span>₹{cartTotal.toFixed(2)}</span></div>
+          <div className="alert alert-info" style={{ marginTop: 20 }}>Payment Method: Cash on Delivery</div>
+          <button className="btn btn-primary" style={{ width: '100%' }} onClick={placeOrder} disabled={processing || loadingCart}>{processing ? 'Placing Order...' : 'Place COD Order'}</button>
         </div>
       </div>
     </div>

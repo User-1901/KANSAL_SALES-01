@@ -9,7 +9,9 @@ export interface Order {
   shipping_phone: string;
   shipping_address: string;
   shipping_city: string;
+  shipping_state: string;
   shipping_postal_code: string;
+  payment_method: 'COD';
   created_at: Date;
   updated_at: Date;
 }
@@ -25,22 +27,6 @@ export interface OrderItem {
   created_at: Date;
 }
 
-// ── PAYMENT TYPES ──────────────────────────────────────────────────────────
-export interface Payment {
-  id: string;
-  order_id: string;
-  razorpay_order_id: string;
-  razorpay_payment_id: string | null;
-  razorpay_signature: string | null;
-  status: 'created' | 'authorized' | 'captured' | 'failed' | 'refunded';
-  amount: string;
-  currency: string;
-  error_code: string | null;
-  error_description: string | null;
-  created_at: Date;
-  updated_at: Date;
-}
-
 // ── API REQUEST/RESPONSE TYPES ──────────────────────────────────────────────
 export interface CreateOrderRequest {
   shipping_name: string;
@@ -48,24 +34,11 @@ export interface CreateOrderRequest {
   shipping_phone: string;
   shipping_address: string;
   shipping_city: string;
+  shipping_state: string;
   shipping_postal_code: string;
 }
 
 export interface CreateOrderResponse {
   order: Order;
-  razorpay_key: string;
-  razorpay_order_id: string;
   amount: number;
-}
-
-export interface VerifyPaymentRequest {
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-}
-
-export interface VerifyPaymentResponse {
-  success: boolean;
-  message: string;
-  order?: Order;
 }
