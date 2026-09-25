@@ -51,7 +51,7 @@ app.use(sanitize);
 // Serve uploaded product images as static files
 app.use('/uploads', express.static(uploadsDir));
 
-// Frontend is deployed separately on Netlify, so we only serve API endpoints
+// Frontend is deployed separately, so this service only serves API endpoints
 // (no need to serve frontend build from backend)
 
 // Health check endpoint - used by load balancers and monitoring
