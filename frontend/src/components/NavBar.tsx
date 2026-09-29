@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
@@ -13,6 +14,7 @@ export default function NavBar() {
   // ── AUTHENTICATION & ROUTING ────────────────────────────────────────────
   const { user, cartCount, logout } = useAuth();  // Current user, cart items, logout function
   const navigate = useNavigate();  // Navigate to pages after logout
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // ── LOGOUT HANDLER ──────────────────────────────────────────────────────
   // Called when user clicks "Logout" button
@@ -31,6 +33,7 @@ export default function NavBar() {
   // ── RENDER NAVBAR ───────────────────────────────────────────────────────
   return (
     <nav
+      className="site-nav"
       aria-label="Main navigation"
       style={{
         position: 'sticky',  // Stay at top when scrolling
@@ -48,6 +51,7 @@ export default function NavBar() {
       {/* ── BRAND LOGO ── */}
       <Link
         to="/"
+        onClick={() => setMenuOpen(false)}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -64,13 +68,26 @@ export default function NavBar() {
         <span>Kansal Sales</span>
       </Link>
 
+      <button
+        type="button"
+        className="site-nav-toggle"
+        aria-expanded={menuOpen}
+        aria-controls="site-nav-menu"
+        aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+
       {/* ── NAVIGATION LINKS & USER SECTION ── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <div id="site-nav-menu" className={`site-nav-menu${menuOpen ? ' is-open' : ''}`}>
         
         {/* Navigation buttons */}
         {[
           { to: '/', label: 'Home' },
-          { to: '/products', label: 'Shop Groceries' },
+          { to: '/products', label: 'Products' },
           { to: '/categories', label: 'Categories' },
           { to: '/contact', label: 'Contact' },
         ].map(({ to, label }) => (
@@ -94,6 +111,7 @@ export default function NavBar() {
               (e.currentTarget as HTMLAnchorElement).style.color = '#FFFFFF';
               (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent';
             }}
+            onClick={() => setMenuOpen(false)}
           >
             {label}
           </Link>
@@ -121,6 +139,7 @@ export default function NavBar() {
             (e.currentTarget as HTMLAnchorElement).style.color = 'var(--light-text)';
             (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent';
           }}
+          onClick={() => setMenuOpen(false)}
         >
           🛒 Basket
           
@@ -208,6 +227,7 @@ export default function NavBar() {
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLAnchorElement).style.background = 'var(--gold)';
             }}
+            onClick={() => setMenuOpen(false)}
           >
             Login
           </Link>

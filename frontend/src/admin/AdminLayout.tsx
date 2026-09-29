@@ -23,9 +23,9 @@ export default function AdminLayout() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--dark)' }}>
+    <div className="admin-shell" style={{ display: 'flex', minHeight: '100vh', background: 'var(--dark)' }}>
       {/* ── Sidebar ── */}
-      <aside style={{
+      <aside className="admin-sidebar" style={{
         width: 240,
         background: 'var(--navy)',
         borderRight: '1px solid rgba(212, 175, 55, 0.1)',
@@ -118,7 +118,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* ── Main content ── */}
-      <main style={{ flex: 1, overflow: 'auto', background: 'var(--dark)' }}>
+      <main className="admin-main" style={{ flex: 1, overflow: 'auto', background: 'var(--dark)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 28px' }}>
           <Outlet />
         </div>
