@@ -227,7 +227,7 @@ export default function LoginPage() {
           fontSize: 14, 
           color: 'var(--gray-400)' 
         }}>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link to="/register" style={{
             color: 'var(--gold)',
             textDecoration: 'none',

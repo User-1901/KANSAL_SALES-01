@@ -10,7 +10,7 @@ export const MAX_EMAIL_LENGTH = 255;
 export const MAX_NAME_LENGTH = 100;
 
 // Admin display name validation
-export const VALID_DISPLAY_NAME_REGEX = /^[a-zA-Z\s\-\.\']+$/;
+export const VALID_DISPLAY_NAME_REGEX = /^[a-zA-Z\s.'-]+$/;
 
 // Product validation
 export const MIN_PRODUCT_PRICE = 0;

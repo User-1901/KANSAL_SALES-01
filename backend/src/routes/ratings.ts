@@ -19,8 +19,8 @@ router.get('/admin/all-ratings', authenticate, requireAdmin, async (req, res) =>
   }
 });
 
-// GET /api/ratings/:productId — get all ratings for a product (public)
-router.get('/:productId', async (req, res) => {
+// GET /api/ratings/:productId/stats — get rating statistics for a product (public)
+router.get('/:productId/stats', async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT id, product_id, user_id, guest_email, rating, review_text, created_at
@@ -35,8 +35,8 @@ router.get('/:productId', async (req, res) => {
   }
 });
 
-// GET /api/ratings/:productId/stats — get rating statistics for a product (public)
-router.get('/:productId/stats', async (req, res) => {
+// GET /api/ratings/:productId — get all ratings for a product (public)
+router.get('/:productId', async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT

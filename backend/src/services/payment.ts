@@ -1,7 +1,8 @@
-import { pool } from '../db.js';
+import { pool, type DatabaseExecutor } from '../db.js';
 import type { CreateOrderRequest, CreateOrderResponse, Order } from '../types/index.js';
 import { validateDeliveryPincode } from './delivery.js';
 import { notifyWhatsAppOrder } from './whatsapp.js';
+import { trackSale } from './inventoryService.js';
 
 export class CheckoutError extends Error {
   statusCode: number;
@@ -21,10 +22,13 @@ function getDiscountedPrice(price: string | number, discount: string | number | 
   return Math.round((basePrice - basePrice * percentage / 100) * 100) / 100;
 }
 
+const MAX_CART_QUANTITY = 100;
+
 export async function createCashOnDeliveryOrder(
   userId: string,
   cartItems: CartItemInput[],
   shippingInfo: CreateOrderRequest,
+  idempotencyKey?: string,
 ): Promise<CreateOrderResponse> {
   const pincodeValidation = validateDeliveryPincode(shippingInfo.shipping_postal_code);
   if (!pincodeValidation.isValid) throw new CheckoutError('Sorry, we currently deliver only within Chandigarh.');
@@ -33,10 +37,14 @@ export async function createCashOnDeliveryOrder(
   for (const item of cartItems) {
     const productId = String(item.productId || '').trim();
     const quantity = Number(item.quantity);
-    if (!productId || !Number.isInteger(quantity) || quantity <= 0) {
+    if (!productId || !Number.isInteger(quantity) || quantity <= 0 || quantity > MAX_CART_QUANTITY) {
       throw new CheckoutError('Cart contains an invalid quantity or product.');
     }
-    normalizedItems.set(productId, (normalizedItems.get(productId) ?? 0) + quantity);
+    const combinedQuantity = (normalizedItems.get(productId) ?? 0) + quantity;
+    if (combinedQuantity > MAX_CART_QUANTITY) {
+      throw new CheckoutError(`Each product quantity cannot exceed ${MAX_CART_QUANTITY}.`);
+    }
+    normalizedItems.set(productId, combinedQuantity);
   }
   if (normalizedItems.size === 0) throw new CheckoutError('Cart is empty');
 
@@ -61,11 +69,20 @@ export async function createCashOnDeliveryOrder(
     });
   }
 
-  const reserved: Array<{ productId: string; quantity: number }> = [];
-  let createdOrderId: string | null = null;
-  try {
+  const result = await pool.transaction(async (transaction: DatabaseExecutor) => {
+    if (idempotencyKey) {
+      const existingResult = await transaction.query(
+        'SELECT * FROM orders WHERE user_id = $1 AND idempotency_key = $2',
+        [userId, idempotencyKey],
+      );
+      if (existingResult.rowCount > 0) {
+        const existingOrder = existingResult.rows[0] as unknown as Order;
+        return { order: existingOrder, items: [], amount: Number(existingOrder.total_amount) };
+      }
+    }
+
     for (const item of orderItems) {
-      const result = await pool.query(
+      const reservation = await transaction.query(
         `UPDATE products
          SET quantity_available = quantity_available - $1,
              stock_status = CASE WHEN quantity_available - $1 = 0 THEN 'out_of_stock' ELSE 'in_stock' END,
@@ -74,18 +91,17 @@ export async function createCashOnDeliveryOrder(
          RETURNING id`,
         [item.quantity, item.productId],
       );
-      if (result.rowCount === 0) {
+      if (reservation.rowCount === 0) {
         throw new CheckoutError('Some items in your cart are no longer available in the requested quantity.');
       }
-      reserved.push({ productId: item.productId, quantity: item.quantity });
     }
 
     const totalAmount = orderItems.reduce((sum, item) => sum + item.productPrice * item.quantity, 0);
-    const orderResult = await pool.query(
+    const orderResult = await transaction.query(
       `INSERT INTO orders
        (user_id, total_amount, status, shipping_name, shipping_email, shipping_phone,
-        shipping_address, shipping_city, shipping_state, shipping_postal_code, payment_method)
-       VALUES ($1, $2, 'pending', $3, $4, $5, $6, $7, $8, $9, 'COD')
+        shipping_address, shipping_city, shipping_state, shipping_postal_code, payment_method, idempotency_key)
+             VALUES ($1, $2, 'pending', $3, $4, $5, $6, $7, $8, $9, 'COD', $10)
        RETURNING *`,
       [
         userId,
@@ -97,42 +113,42 @@ export async function createCashOnDeliveryOrder(
         shippingInfo.shipping_city.trim(),
         shippingInfo.shipping_state.trim(),
         shippingInfo.shipping_postal_code.trim(),
+        idempotencyKey ?? null,
       ],
     );
     const order = orderResult.rows[0] as unknown as Order;
-    createdOrderId = order.id;
 
     const itemValues = orderItems.flatMap(item => [item.productId, item.productName, item.productPrice.toFixed(2), item.quantity]);
     const placeholders = orderItems.map((_, index) => `($1, $${index * 4 + 2}, $${index * 4 + 3}, $${index * 4 + 4}, $${index * 4 + 5})`).join(', ');
-    const itemResult = await pool.query(
+    const itemResult = await transaction.query(
       `INSERT INTO order_items (order_id, product_id, product_name, product_price, quantity)
        VALUES ${placeholders} RETURNING *`,
       [order.id, ...itemValues],
     );
 
-    await pool.query('DELETE FROM cart_items WHERE user_id = $1', [userId]);
-    try {
-      await notifyWhatsAppOrder(order, itemResult.rows);
-    } catch (notificationError) {
-      console.error('[WHATSAPP] Order notification failed:', notificationError);
-    }
-    return { order, amount: totalAmount };
-  } catch (error) {
-    if (createdOrderId) {
-      await pool.query('DELETE FROM orders WHERE id = $1', [createdOrderId]);
-    }
-    for (const item of reserved) {
-      await pool.query(
-        `UPDATE products
-         SET quantity_available = quantity_available + $1,
-             stock_status = CASE WHEN quantity_available + $1 = 0 THEN 'out_of_stock' ELSE 'in_stock' END,
-             updated_at = NOW()
-         WHERE id = $2`,
-        [item.quantity, item.productId],
-      );
-    }
-    throw error;
+    await transaction.query('DELETE FROM cart_items WHERE user_id = $1', [userId]);
+    return { order, items: itemResult.rows, amount: totalAmount };
+  });
+
+  try {
+    await notifyWhatsAppOrder(result.order, result.items);
+  } catch (notificationError) {
+    console.error('[WHATSAPP] Order notification failed:', notificationError);
   }
+
+  if (result.items.length > 0) {
+    await Promise.all(result.items.map(async item => {
+      const sale = item as { product_id?: string; quantity?: number };
+      if (!sale.product_id || !sale.quantity) return;
+      try {
+        await trackSale(sale.product_id, sale.quantity);
+      } catch (trackingError) {
+        console.error('[INVENTORY] Sale tracking failed:', trackingError);
+      }
+    }));
+  }
+
+  return { order: result.order, amount: result.amount };
 }
 
 export async function getOrderDetails(orderId: string): Promise<{ order: Order; items: unknown[] }> {

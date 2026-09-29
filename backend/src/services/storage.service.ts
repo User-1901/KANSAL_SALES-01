@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '../lib/supabase.js';
 import { parseSupabaseServerError } from '../utils/supabaseError.js';
+import { PRODUCT_IMAGES_BUCKET } from '../constants/storage.js';
 
 export const storageServerService = {
   /**
@@ -34,4 +35,25 @@ export const storageServerService = {
 
     if (error) throw parseSupabaseServerError(error, `Failed to delete file from ${bucket}`);
   },
+    /**
+     * Ensure the product image bucket exists and is publicly readable.
+     */
+    async ensureProductImagesBucket(): Promise<void> {
+      const { data: buckets, error: listError } = await supabaseAdmin.storage.listBuckets();
+      if (listError) {
+        throw parseSupabaseServerError(listError, 'Failed to list Supabase Storage buckets');
+      }
+
+      if (buckets.some(bucket => bucket.name === PRODUCT_IMAGES_BUCKET)) return;
+
+      const { error: createError } = await supabaseAdmin.storage.createBucket(PRODUCT_IMAGES_BUCKET, {
+        public: true,
+        fileSizeLimit: '5MB',
+        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+      });
+
+      if (createError) {
+        throw parseSupabaseServerError(createError, 'Failed to create product image bucket');
+      }
+    },
 };

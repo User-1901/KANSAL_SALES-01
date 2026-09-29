@@ -16,6 +16,13 @@ const dbPath = path.resolve(__dirname, '../../pgdata');
 let pgPool: pg.Pool | null = null;
 let pglite: PGlite | null = null;
 
+export type DatabaseExecutor = {
+  query: (text: string, params?: unknown[]) => Promise<{
+    rows: Array<Record<string, unknown>>;
+    rowCount: number;
+  }>;
+};
+
 // In production (Render), DATABASE_URL MUST be set
 // In development, it's optional and defaults to PGlite
 const isProduction = process.env.NODE_ENV === 'production';
@@ -167,6 +174,41 @@ export const pool = {
       rows: result.rows,
       rowCount: result.rowCount || result.rows.length,
     };
+  },
+  transaction: async <T>(callback: (executor: DatabaseExecutor) => Promise<T>): Promise<T> => {
+    await dbReady;
+
+    if (hasDatabase && pgPool) {
+      const client = await pgPool.connect();
+      try {
+        await client.query('BEGIN');
+        const executor: DatabaseExecutor = {
+          query: async (text, params) => {
+            const result = await client.query(text, params);
+            return { rows: result.rows, rowCount: result.rowCount ?? result.rows.length };
+          },
+        };
+        const result = await callback(executor);
+        await client.query('COMMIT');
+        return result;
+      } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+      } finally {
+        client.release();
+      }
+    }
+
+    if (pglite) {
+      return pglite.transaction(async (transaction) => callback({
+        query: async (text, params) => {
+          const result = await transaction.query(text, params);
+          return { rows: result.rows as Array<Record<string, unknown>>, rowCount: result.rows.length };
+        },
+      }));
+    }
+
+    throw new Error('Database not initialized');
   },
   end: async () => {
     if (hasDatabase && pgPool) {

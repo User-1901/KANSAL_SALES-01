@@ -3,6 +3,7 @@ import { pool } from '../db.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+const MAX_CART_QUANTITY = 100;
 
 // All cart endpoints require authentication
 router.use(authenticate);
@@ -10,11 +11,12 @@ router.use(authenticate);
 /** Helper: fetch the full cart for a user */
 async function getCart(userId: string): Promise<{
   userId: string;
-  items: { productId: string; name: string; price: string; quantity_available: number; quantity: number }[];
+  items: { productId: string; name: string; price: string; discount_percentage: string | number | null; quantity_available: number; quantity: number }[];
   total: string;
 }> {
   const result = await pool.query(
-    `SELECT ci.product_id AS "productId", p.name, p.price::text, p.quantity_available, ci.quantity
+        `SELECT ci.product_id AS "productId", p.name, p.price::text, p.discount_percentage,
+          p.quantity_available, ci.quantity
      FROM cart_items ci
      JOIN products p ON p.id = ci.product_id
      WHERE ci.user_id = $1
@@ -26,12 +28,17 @@ async function getCart(userId: string): Promise<{
     productId: string;
     name: string;
     price: string;
+    discount_percentage: string | number | null;
     quantity_available: number;
     quantity: number;
   }[];
 
   const total = items
-    .reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0)
+    .reduce((sum, item) => {
+      const price = parseFloat(item.price);
+      const discount = Number(item.discount_percentage ?? 0);
+      return sum + (price - price * discount / 100) * item.quantity;
+    }, 0)
     .toFixed(2);
 
   return { userId, items, total };
@@ -57,8 +64,8 @@ router.post('/items', async (req, res) => {
   }
 
   const qty = Number(quantity);
-  if (!Number.isInteger(qty) || qty <= 0) {
-    res.status(400).json({ error: 'Quantity must be greater than 0' });
+  if (!Number.isInteger(qty) || qty <= 0 || qty > MAX_CART_QUANTITY) {
+    res.status(400).json({ error: `Quantity must be between 1 and ${MAX_CART_QUANTITY}` });
     return;
   }
 
@@ -96,8 +103,8 @@ router.put('/items/:productId', async (req, res) => {
   const { quantity } = req.body as { quantity?: unknown };
 
   const qty = Number(quantity);
-  if (!Number.isInteger(qty) || qty <= 0) {
-    res.status(400).json({ error: 'Quantity must be greater than 0' });
+  if (!Number.isInteger(qty) || qty <= 0 || qty > MAX_CART_QUANTITY) {
+    res.status(400).json({ error: `Quantity must be between 1 and ${MAX_CART_QUANTITY}` });
     return;
   }
 

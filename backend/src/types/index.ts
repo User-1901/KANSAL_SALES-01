@@ -12,6 +12,7 @@ export interface Order {
   shipping_state: string;
   shipping_postal_code: string;
   payment_method: 'COD';
+  idempotency_key?: string | null;
   created_at: Date;
   updated_at: Date;
 }

@@ -49,7 +49,6 @@ app.use(sanitize);
 // ──────────────────────────────────────────────────────────────────────────────
 
 // Serve uploaded product images as static files
-app.use('/uploads', express.static(uploadsDir));
 
 // Frontend is deployed separately, so this service only serves API endpoints
 // (no need to serve frontend build from backend)
@@ -69,6 +68,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/ratings', ratingsRouter);
+app.use('/api/delivery', deliveryRouter);
 
 // Shopping Cart & Orders
 app.use('/api/cart', cartRouter);
@@ -83,6 +83,7 @@ app.use('/api/inventory', inventoryRouter);
 app.use('/api/admin/orders', adminOrdersRouter);
 
 // File Uploads (product images)
+// Removed local filesystem serving for uploads
 app.use('/api/upload', uploadRouter);
 
 export default app;

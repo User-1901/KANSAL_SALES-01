@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
             <div style={{ fontSize: 48, marginBottom: 16 }}>📧</div>
             <h2 style={{ margin: '0 0 12px', fontSize: 22 }}>Check your email</h2>
             <p style={{ color: 'var(--white)', marginBottom: 24, fontSize: 15 }}>
-              If <strong>{email}</strong> is registered, we've sent a password reset link. Check your inbox (and spam folder).
+              If <strong>{email}</strong> is registered, we&apos;ve sent a password reset link. Check your inbox (and spam folder).
             </p>
             <Link to="/login" className="btn btn-primary" style={{ textDecoration: 'none' }}>
               Back to Login
@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
           <>
             <h1 style={{ marginTop: 0, marginBottom: 8, fontSize: 24 }}>Forgot Password</h1>
             <p style={{ color: 'var(--white)', marginTop: 0, marginBottom: 24, fontSize: 14 }}>
-              Enter your email and we'll send you a reset link.
+              Enter your email and we&apos;ll send you a reset link.
             </p>
 
             {/* Error alert */}

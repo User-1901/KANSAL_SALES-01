@@ -3,11 +3,13 @@ import nodemailer from 'nodemailer';
 // ── Email Configuration ────────────────────────────────────────────────────────
 // SMTP configuration for sending transactional emails (verification, password reset, etc.)
 // Environment variables REQUIRED: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+const smtpPort = Number(process.env.SMTP_PORT ?? 587);
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT ?? 587),
-  // SECURITY: Always use secure connection (TLS) for production
-  secure: process.env.NODE_ENV === 'production',
+  port: smtpPort,
+  // Port 465 uses implicit TLS; ports such as 587 negotiate STARTTLS.
+  secure: smtpPort === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,

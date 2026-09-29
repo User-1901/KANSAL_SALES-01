@@ -3,6 +3,25 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
 
+interface Order {
+  id: string;
+  status: string;
+  total_amount: string;
+  shipping_name: string;
+  shipping_address: string;
+  shipping_city: string;
+  shipping_postal_code: string;
+  shipping_email: string;
+  shipping_phone: string;
+}
+
+interface OrderItem {
+  product_name: string;
+  product_price: string;
+  quantity: number;
+  line_total: string;
+}
+
 // ── ORDER DETAILS PAGE ──────────────────────────────────────────────────────
 // Shows order confirmation and details after COD order creation
 // Displays order number, items, total, and shipping address
@@ -10,8 +29,8 @@ import { useAuth } from '../contexts/AuthContext';
 export default function OrderPage() {
   const { orderId } = useParams<{ orderId: string }>();
   const { user } = useAuth();
-  const [order, setOrder] = useState<any>(null);
-  const [items, setItems] = useState<any[]>([]);
+  const [order, setOrder] = useState<Order | null>(null);
+  const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -24,7 +43,7 @@ export default function OrderPage() {
         const res = await api.get(`/api/orders/${orderId}`);
         setOrder(res.data.order);
         setItems(res.data.items || []);
-      } catch (err) {
+      } catch {
         setError('Failed to load order details');
       } finally {
         setLoading(false);
@@ -151,10 +170,10 @@ export default function OrderPage() {
 
       {/* Next steps */}
       <div style={{ background: 'var(--green-pale)', border: '1px solid #86efac', borderRadius: 6, padding: 16, marginBottom: 20 }}>
-        <h4 style={{ marginTop: 0, marginBottom: 8, color: 'var(--green-dark)' }}>What's next?</h4>
+          <h4 style={{ marginTop: 0, marginBottom: 8, color: 'var(--green-dark)' }}>What&apos;s next?</h4>
         <ul style={{ marginTop: 0, marginBottom: 0, paddingLeft: 20, color: 'var(--green-dark)' }}>
-          <li style={{ marginBottom: 4 }}>You'll receive an order confirmation email shortly</li>
-          <li style={{ marginBottom: 4 }}>We'll prepare your items for shipment</li>
+          <li style={{ marginBottom: 4 }}>You&apos;ll receive an order confirmation email shortly</li>
+          <li style={{ marginBottom: 4 }}>We&apos;ll prepare your items for shipment</li>
           <li>Your tracking details will be sent once items are dispatched</li>
         </ul>
       </div>

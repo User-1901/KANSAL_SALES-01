@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   const [loadingCart, setLoadingCart] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
+  const checkoutKey = useRef(crypto.randomUUID());
   const [shipping, setShipping] = useState<ShippingInfo>({
     shipping_name: user?.displayName || '',
     shipping_email: user?.email || '',
@@ -75,7 +76,7 @@ export default function CheckoutPage() {
     return <div className="page-container"><div className="card" style={{ padding: 32, textAlign: 'center' }}><h2>Your Cart is Empty</h2><button className="btn btn-primary" onClick={() => navigate('/products')}>Continue Shopping</button></div></div>;
   }
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = event.target;
     setShipping(previous => ({ ...previous, [name]: value }));
   }
@@ -93,13 +94,18 @@ export default function CheckoutPage() {
     setProcessing(true);
     setError('');
     try {
-      const response = await api.post('/api/checkout', {
-        shippingInfo: shipping,
-        cartItems: cartItems.map(item => ({ productId: item.productId, quantity: item.quantity })),
-      });
+      const response = await api.post(
+        '/api/checkout',
+        {
+          shippingInfo: shipping,
+          cartItems: cartItems.map(item => ({ productId: item.productId, quantity: item.quantity })),
+        },
+        { headers: { 'Idempotency-Key': checkoutKey.current } },
+      );
       navigate(`/orders/${response.data.order.id}`, { replace: true });
-    } catch (requestError: any) {
-      setError(requestError.response?.data?.error || "We couldn't place your order. Please try again.");
+    } catch (requestError: unknown) {
+      const response = (requestError as { response?: { data?: { error?: string } } }).response;
+      setError(response?.data?.error || "We couldn't place your order. Please try again.");
     } finally {
       setProcessing(false);
     }

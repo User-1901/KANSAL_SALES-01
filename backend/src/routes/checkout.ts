@@ -9,24 +9,42 @@ const router = Router();
 // ── POST /api/checkout - Create a COD order ─────────────────────────────────
 router.post('/api/checkout', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
     const { shippingInfo, cartItems } = req.body;
 
-    // Validate shipping info
-    if (!shippingInfo || !shippingInfo.shipping_name || !shippingInfo.shipping_email ||
-        !shippingInfo.shipping_phone || !shippingInfo.shipping_address || 
-        !shippingInfo.shipping_city || !shippingInfo.shipping_state || !shippingInfo.shipping_postal_code) {
+    if (!shippingInfo || typeof shippingInfo !== 'object' || Array.isArray(shippingInfo)) {
+      return res.status(400).json({ error: 'Shipping information is required' });
+    }
+
+    const fields = ['shipping_name', 'shipping_email', 'shipping_phone', 'shipping_address', 'shipping_city', 'shipping_state', 'shipping_postal_code'] as const;
+    if (fields.some(field => typeof shippingInfo[field] !== 'string' || shippingInfo[field].trim() === '')) {
       return res.status(400).json({ error: 'Incomplete shipping information' });
     }
 
-    if (!cartItems || cartItems.length === 0) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingInfo.shipping_email.trim())) {
+      return res.status(400).json({ error: 'A valid shipping email is required' });
+    }
+    if (!/^\d{10}$/.test(shippingInfo.shipping_phone.trim())) {
+      return res.status(400).json({ error: 'A valid 10-digit shipping phone is required' });
+    }
+    if (shippingInfo.shipping_name.trim().length > 255 || shippingInfo.shipping_address.trim().length > 1000) {
+      return res.status(400).json({ error: 'Shipping information is too long' });
+    }
+
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return res.status(400).json({ error: 'Cart is empty' });
     }
 
-    const orderResponse = await createCashOnDeliveryOrder(userId, cartItems, shippingInfo);
+    const idempotencyKeyHeader = req.header('Idempotency-Key');
+    const idempotencyKey = idempotencyKeyHeader?.trim();
+    if (idempotencyKey && idempotencyKey.length > 128) {
+      return res.status(400).json({ error: 'Idempotency-Key is too long' });
+    }
+
+    const orderResponse = await createCashOnDeliveryOrder(userId, cartItems, shippingInfo, idempotencyKey);
     
     res.json(orderResponse);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Checkout error:', error);
     
     // Handle delivery area errors with specific message
@@ -43,7 +61,7 @@ router.post('/api/checkout', authenticate, async (req: Request, res: Response) =
 router.get('/api/orders/:id', authenticate, async (req: Request, res: Response) => {
   try {
     const orderId = req.params.id;
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
 
     // Verify order belongs to user
     const orderCheckResult = await pool.query(`
@@ -70,7 +88,7 @@ router.get('/api/orders/:id', authenticate, async (req: Request, res: Response) 
 // Returns all orders for authenticated user
 router.get('/api/orders', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user!.id;
 
     const result = await pool.query(`
       SELECT * FROM orders 

@@ -4,12 +4,17 @@ import jwt from 'jsonwebtoken';
 // ── JWT Configuration ─────────────────────────────────────────────────────────
 // JWT_SECRET should ALWAYS be loaded from environment variables in production
 // SECURITY WARNING: Never use default secrets in production!
-const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ── Authentication Middleware ──────────────────────────────────────────────────
 // Verifies JWT token from cookies and attaches user info to request
 // Applied to routes that require logged-in users
 export function authenticate(req: Request, res: Response, next: NextFunction): void {
+  if (!JWT_SECRET) {
+    res.status(500).json({ error: 'Server authentication is not configured' });
+    return;
+  }
+
   const token = req.cookies?.token as string | undefined;
 
   if (!token) {

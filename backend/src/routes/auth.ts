@@ -9,18 +9,15 @@ import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
 
-// ── Security: Rate Limiting for Login Attempts ─────────────────────────────────
-// DISABLED: Rate limiting removed for development
-// To enable in production: Uncomment the loginRateLimiter code below
-// const loginRateLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 10,
-//   standardHeaders: true,
-//   legacyHeaders: false,
-//   handler: (_req, res) => {
-//     res.status(429).json({ error: 'Too many login attempts. Please try again in 15 minutes.' });
-//   },
-// });
+const authRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(429).json({ error: 'Too many attempts. Please try again in 15 minutes.' });
+  },
+});
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 // Email validation regex - RFC 5322 simplified
@@ -81,7 +78,7 @@ router.post('/register', async (req: Request, res: Response) => {
 // ── POST /login - User authentication ──────────────────────────────────────────
 // SECURITY: Rate-limited to prevent brute-force attacks
 // Returns 200 + JWT token on success, 401 on authentication failure
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', authRateLimit, async (req: Request, res: Response) => {
   const { email, password } = req.body as { email?: string; password?: string };
 
   // Validate required fields
@@ -106,7 +103,7 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 
   // Get JWT secret from environment (required for signing tokens)
-  const secret = (process.env.JWT_SECRET as string) ?? 'dev-secret';
+  const secret = process.env.JWT_SECRET;
   if (!secret) {
     res.status(500).json({ error: 'Server configuration error' });
     return;
@@ -156,7 +153,7 @@ router.post('/logout', (_req: Request, res: Response) => {
 // SECURITY: Sends reset link via email if account exists
 // IMPORTANT: Always returns 200 to prevent account enumeration attacks!
 // This prevents attackers from discovering which emails are registered
-router.post('/forgot-password', async (req: Request, res: Response) => {
+router.post('/forgot-password', authRateLimit, async (req: Request, res: Response) => {
   const { email } = req.body as { email?: string };
   if (!email || !EMAIL_REGEX.test(email)) {
     res.status(400).json({ error: 'A valid email address is required.' });

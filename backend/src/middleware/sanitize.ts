@@ -11,7 +11,7 @@ function escapeHtml(value: string): string {
     .replace(/&/g, '&amp;')      // & → &amp;
     .replace(/</g, '&lt;')        // < → &lt;
     .replace(/>/g, '&gt;')        // > → &gt;
-    .replace(/\"/g, '&quot;')      // \" → &quot;
+    .replace(/"/g, '&quot;')       // " → &quot;
     .replace(/'/g, '&#x27;');     // ' → &#x27;
 }
 

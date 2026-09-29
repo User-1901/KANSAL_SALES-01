@@ -183,7 +183,7 @@ export default function AdminRatingsPage() {
                           paddingLeft: 12,
                         }}
                       >
-                        "{rating.review_text}"
+                        &quot;{rating.review_text}&quot;
                       </p>
                     )}
 

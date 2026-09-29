@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
 import ConfirmationDialog from '../components/ConfirmationDialog';
@@ -41,7 +41,7 @@ export default function AdminUsersPage() {
   useEffect(() => { fetchAdmins(); }, []);
 
   function set(field: keyof typeof EMPTY) {
-    return (e: React.ChangeEvent<HTMLInputElement>) =>
+    return (e: ChangeEvent<HTMLInputElement>) =>
       setForm(f => ({ ...f, [field]: e.target.value }));
   }
 

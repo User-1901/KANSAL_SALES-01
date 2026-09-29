@@ -19,7 +19,7 @@ export default function AdminDashboard() {
   return (
     <div>
       <h1 style={{ margin: '0 0 4px', fontSize: 28, fontWeight: 800, color: 'var(--gold)', textShadow: '0 0 12px rgba(255, 107, 53, 0.4)' }}>Dashboard</h1>
-      <p style={{ margin: '0 0 32px', color: 'var(--white)', fontSize: 15 }}>Welcome back. Here's an overview of your store.</p>
+      <p style={{ margin: '0 0 32px', color: 'var(--white)', fontSize: 15 }}>Welcome back. Here&apos;s an overview of your store.</p>
 
       {/* Stat cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20, marginBottom: 40 }}>
