@@ -76,9 +76,9 @@ export default function CategoriesPage() {
   // ── RENDER PAGE ─────────────────────────────────────────────────────────
   return (
     <div className="page-container">
-      <h1 style={{ marginBottom: 8 }}>Categories</h1>
+      <h1 style={{ marginBottom: 8 }}>Shop by Category</h1>
       <p style={{ color: 'var(--white)', marginTop: 0 }}>
-        Select a category to browse products
+        Build your basket faster with pantry, dairy, produce and household essentials.
       </p>
 
       {/* Show loading message while fetching categories */}
@@ -117,9 +117,9 @@ export default function CategoriesPage() {
       {selectedId && (
         <>
           {loadingProds ? (
-            <p>Loading products...</p>
+            <p>Loading items in this aisle...</p>
           ) : products.length === 0 ? (
-            <p className="text-muted">No products found in this category.</p>
+            <p className="text-muted">This aisle is empty right now. Check back soon.</p>
           ) : (
             <div className="product-grid">
               {/* Display products grid */}

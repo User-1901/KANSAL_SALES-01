@@ -200,9 +200,9 @@ const ProductDetailPage: React.FC = () => {
         {/* Stock Status */}
         <div className="stock-status">
           {product.stock_status === 'in_stock' ? (
-            <span className="in-stock">✓ In Stock</span>
+            <span className="in-stock">✓ Available for delivery</span>
           ) : (
-            <span className="out-stock">Out of Stock</span>
+            <span className="out-stock">Currently unavailable</span>
           )}
         </div>
 
@@ -236,14 +236,14 @@ const ProductDetailPage: React.FC = () => {
             className="add-to-cart-btn"
             disabled={product.stock_status !== 'in_stock'}
           >
-            Add to Cart
+            Add to Basket
           </button>
         </div>
 
         {/* Why Shop With Us Section */}
         {product.why_shop_message && (
           <div className="why-shop-message-section">
-            <h3>Why Shop With Us?</h3>
+            <h3>Why order from us?</h3>
             <p>{product.why_shop_message}</p>
           </div>
         )}
@@ -252,7 +252,7 @@ const ProductDetailPage: React.FC = () => {
       {/* Reviews Section - Below both columns */}
       {reviews.length > 0 && (
         <div className="reviews-section-full">
-          <h2>Customer Reviews</h2>
+          <h2>Customer Ratings</h2>
           <div className="reviews-list">
             {reviews.map((review) => (
               <div key={review.id} className="review-card">

@@ -176,9 +176,9 @@ export default function CartPage() {
       {/* Show empty cart message if no items */}
       {items.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <p style={{ fontSize: 18, color: 'var(--white)' }}>Your cart is empty.</p>
+          <p style={{ fontSize: 18, color: 'var(--white)' }}>Your basket is empty.</p>
           <Link to="/products" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-            Browse Products
+            Start Shopping
           </Link>
         </div>
       ) : (
@@ -188,7 +188,7 @@ export default function CartPage() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Product</th>
+                  <th>Item</th>
                   <th>Price</th>
                   <th>Quantity</th>
                   <th>Total</th>
@@ -297,7 +297,7 @@ export default function CartPage() {
               className="btn btn-primary"
               style={{ textDecoration: 'none', padding: '10px 24px', fontSize: 15 }}
             >
-              Proceed to Checkout
+              Continue to Delivery
             </Link>
           </div>
         </>

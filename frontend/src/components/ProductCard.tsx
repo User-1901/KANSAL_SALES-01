@@ -156,7 +156,7 @@ export default function ProductCard({ product }: Props) {
 
         {/* Stock status badge — green="In Stock" / red="Out of Stock" */}
         <span className={`badge ${inStock ? 'badge-green' : 'badge-red'}`}>
-          {inStock ? 'In Stock' : 'Out of Stock'}
+          {inStock ? 'Available today' : 'Currently unavailable'}
         </span>
 
         {/* ── CART ACTION BUTTONS ── */}
@@ -169,7 +169,7 @@ export default function ProductCard({ product }: Props) {
             onClick={openQuantitySelector}
             disabled={!inStock}  // Disable button if product is out of stock
           >
-            Add to Cart
+            Add to Basket
           </button>
         ) : (
           // ── QUANTITY SELECTOR STATE: Counter + Add/Cancel buttons ──

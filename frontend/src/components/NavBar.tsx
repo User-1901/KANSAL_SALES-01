@@ -70,7 +70,7 @@ export default function NavBar() {
         {/* Navigation buttons */}
         {[
           { to: '/', label: 'Home' },
-          { to: '/products', label: 'Collections' },
+          { to: '/products', label: 'Shop Groceries' },
           { to: '/categories', label: 'Categories' },
           { to: '/contact', label: 'Contact' },
         ].map(({ to, label }) => (
@@ -122,7 +122,7 @@ export default function NavBar() {
             (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent';
           }}
         >
-          🛒 Cart
+          🛒 Basket
           
           {/* Cart item count badge — shows only if cartCount > 0 */}
           {cartCount > 0 && (

@@ -119,7 +119,7 @@ export default function RegisterPage() {
             fontSize: 24,
             fontWeight: 800,
           }}>
-            Welcome to Kansal Sales
+            Welcome to your easier grocery run
           </h2>
           <p style={{ 
             color: 'var(--white)',
@@ -127,7 +127,7 @@ export default function RegisterPage() {
             marginBottom: 28,
             lineHeight: 1.6,
           }}>
-            Thank you for joining us. Verify your email to get started.
+            Your account is ready for faster checkout, saved baskets and order updates.
           </p>
           <Link
             to="/login"
@@ -177,14 +177,14 @@ export default function RegisterPage() {
           fontWeight: 800,
           letterSpacing: '-0.3px',
         }}>
-            Join Kansal Sales
+            Create your grocery account
         </h1>
         <p style={{
           margin: '0 0 28px',
           fontSize: 14,
           color: 'var(--gray-400)',
         }}>
-          Create your account and explore luxury fashion
+          Create your account and make your weekly grocery run easier
         </p>
 
         {/* Global error message (if registration fails) */}

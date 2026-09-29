@@ -81,9 +81,9 @@ export default function ContactPage() {
   // ── RENDER PAGE ──────────────────────────────────────────────────────────
   return (
     <div className="page-container" style={{ maxWidth: 600 }}>
-      <h1 style={{ marginBottom: 4 }}>Contact Us</h1>
+      <h1 style={{ marginBottom: 4 }}>Need Help With Your Order?</h1>
       <p style={{ color: 'var(--white)', marginTop: 0, marginBottom: 24 }}>
-        Have a question or feedback? We&apos;d love to hear from you.
+        Our support team can help with products, delivery areas and order updates.
       </p>
 
       {/* Community link card */}
@@ -101,7 +101,7 @@ export default function ContactPage() {
       >
         <span style={{ fontSize: 28 }}>💬</span>
         <div>
-          <div style={{ fontWeight: 600, marginBottom: 2 }}>Join our community</div>
+          <div style={{ fontWeight: 600, marginBottom: 2 }}>Get grocery updates</div>
           {/* Link to Telegram community */}
           <a
             href="https://t.me/+CTrROqUmKkM4MTJl"
@@ -109,7 +109,7 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             style={{ color: 'var(--green-dark)', fontWeight: 500 }}
           >
-            Join our Telegram community
+            Join our customer community
           </a>
         </div>
       </div>

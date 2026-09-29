@@ -93,7 +93,7 @@ export default function LoginPage() {
           fontSize: 14,
           color: 'var(--white)',
         }}>
-          Sign in to your Kansal Sales account
+          Sign in to manage your basket and orders
         </p>
 
         {/* Error alert — shown if login fails */}

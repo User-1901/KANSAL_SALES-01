@@ -73,7 +73,7 @@ export default function CheckoutPage() {
   }
 
   if (!loadingCart && cartItems.length === 0) {
-    return <div className="page-container"><div className="card" style={{ padding: 32, textAlign: 'center' }}><h2>Your Cart is Empty</h2><button className="btn btn-primary" onClick={() => navigate('/products')}>Continue Shopping</button></div></div>;
+    return <div className="page-container"><div className="card" style={{ padding: 32, textAlign: 'center' }}><h2>Your Basket is Empty</h2><button className="btn btn-primary" onClick={() => navigate('/products')}>Shop Groceries</button></div></div>;
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -113,11 +113,11 @@ export default function CheckoutPage() {
 
   return (
     <div className="page-container" style={{ maxWidth: 900, paddingTop: 32 }}>
-      <h1>Checkout</h1>
+      <h1>Confirm Your Grocery Order</h1>
       {error && <div className="alert alert-error">{error}</div>}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
         <div className="card" style={{ padding: 24 }}>
-          <h2 style={{ marginTop: 0 }}>Delivery Details</h2>
+          <h2 style={{ marginTop: 0 }}>Delivery Address</h2>
           {[
             ['shipping_name', 'Full Name', 'text'],
             ['shipping_email', 'Email', 'email'],
@@ -137,7 +137,7 @@ export default function CheckoutPage() {
           </div>
         </div>
         <div className="card" style={{ padding: 24, alignSelf: 'start' }}>
-          <h2 style={{ marginTop: 0 }}>Order Summary</h2>
+          <h2 style={{ marginTop: 0 }}>Basket Summary</h2>
           {loadingCart ? <p>Loading cart...</p> : cartItems.map(item => {
             const price = Number(item.price);
             const discountedPrice = price - price * (item.discount_percentage || 0) / 100;

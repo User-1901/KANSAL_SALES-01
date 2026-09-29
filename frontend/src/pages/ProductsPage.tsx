@@ -75,15 +75,18 @@ export default function ProductsPage() {
   // ── RENDER PRODUCTS PAGE ────────────────────────────────────────────────
   return (
     <div className="page-container">
-      <h1 style={{ marginBottom: 16 }}>Products</h1>
+      <h1 style={{ marginBottom: 8 }}>Shop Groceries</h1>
+      <p style={{ marginTop: 0, marginBottom: 20, color: 'var(--white)' }}>
+        Find everyday essentials, pantry staples and fresh food for your home.
+      </p>
 
       {/* Search input box */}
       <div className="form-group" style={{ maxWidth: 400, marginBottom: 8 }}>
-        <label htmlFor="product-search">Search products</label>
+        <label htmlFor="product-search">What are you looking for?</label>
         <input
           id="product-search"
           type="search"
-          placeholder="Search by name or description…"
+          placeholder="Search milk, rice, snacks, vegetables..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
@@ -91,9 +94,9 @@ export default function ProductsPage() {
 
       {/* Show loading message while fetching */}
       {loading ? (
-        <p>Loading...</p>
+        <p>Finding the best matches...</p>
       ) : products.length === 0 ? (
-        <p className="text-muted">No products found.</p>
+        <p className="text-muted">We could not find that grocery item. Try a broader search.</p>
       ) : (
         <div className="product-grid">
           {/* Each card has add-to-cart button */}

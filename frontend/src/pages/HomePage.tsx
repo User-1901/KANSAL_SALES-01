@@ -69,7 +69,7 @@ export default function HomePage() {
           fontWeight: 300,
           letterSpacing: '0.3px',
         }}>
-          Premium Fashion & Luxury Apparel
+          Fresh groceries, everyday essentials
         </p>
         <p style={{
           margin: '0 0 32px',
@@ -77,7 +77,7 @@ export default function HomePage() {
           opacity: 0.8,
           color: '#D7E6F4',
         }}>
-          Curated collections for the discerning individual
+          Stock up on pantry staples, dairy, produce and household needs, delivered across Chandigarh.
         </p>
         {/* "Shop Now" button that navigates to products page */}
         <Link
@@ -105,8 +105,34 @@ export default function HomePage() {
             (e.currentTarget as HTMLAnchorElement).style.boxShadow = 'none';
           }}
         >
-          Explore Collections
+          Shop Fresh Today
         </Link>
+      </section>
+
+      <section
+        aria-label="Kansal Sales grocery benefits"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: 12,
+          padding: '20px 24px',
+          borderBottom: '1px solid rgba(212, 175, 55, 0.25)',
+          background: 'var(--dark-secondary)',
+        }}
+      >
+        {[
+          ['🥬', 'Fresh essentials', 'Everyday groceries for your home'],
+          ['📍', 'Chandigarh delivery', 'Serviceable local pincodes'],
+          ['💵', 'Cash on delivery', 'Pay when your order arrives'],
+        ].map(([icon, title, description]) => (
+          <div key={title} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 8px' }}>
+            <span style={{ fontSize: 24 }} aria-hidden="true">{icon}</span>
+            <div>
+              <strong style={{ display: 'block', color: 'var(--gold)', fontSize: 13 }}>{title}</strong>
+              <span style={{ color: 'var(--white)', fontSize: 12 }}>{description}</span>
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* FEATURED PRODUCTS SECTION */}
@@ -118,7 +144,7 @@ export default function HomePage() {
           color: 'var(--white)',
           letterSpacing: '-0.3px',
         }}>
-          Featured Collections
+          Popular This Week
         </h2>
         <p style={{ 
           color: 'var(--white)', 
@@ -127,12 +153,12 @@ export default function HomePage() {
           fontSize: 15,
           letterSpacing: '0.2px',
         }}>
-          Hand-picked selections from our latest arrivals
+          Reliable staples and fresh picks for your next grocery run.
         </p>
 
         {/* Show loading message while fetching products */}
         {loading ? (
-          <p style={{ fontSize: 16, color: 'var(--white)', textAlign: 'center' }}>Loading featured collections...</p>
+          <p style={{ fontSize: 16, color: 'var(--white)', textAlign: 'center' }}>Loading fresh picks...</p>
         ) : products.length === 0 ? (
           /* Show message if no products available */
           <p style={{ fontSize: 15, color: 'var(--white)', textAlign: 'center' }}>No products available at the moment.</p>
@@ -174,7 +200,7 @@ export default function HomePage() {
                 (e.currentTarget as HTMLAnchorElement).style.boxShadow = 'none';
               }}
             >
-              View All Collections
+              Browse All Groceries
             </Link>
           </div>
         )}

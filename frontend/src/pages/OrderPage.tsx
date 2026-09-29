@@ -86,9 +86,9 @@ export default function OrderPage() {
       {/* Success header */}
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <div style={{ fontSize: 64, marginBottom: 12 }}>✅</div>
-        <h1 style={{ marginTop: 0, marginBottom: 8 }}>Thank You for Your Order!</h1>
+        <h1 style={{ marginTop: 0, marginBottom: 8 }}>Your Grocery Order is Confirmed</h1>
         <p style={{ color: 'var(--white)', fontSize: 15 }}>
-          Your order has been received. Payment will be collected on delivery.
+          Your items are being prepared. Payment will be collected when they arrive.
         </p>
       </div>
 
@@ -116,7 +116,7 @@ export default function OrderPage() {
 
         {/* Order items */}
         <div>
-          <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 16 }}>Items in Your Order</h3>
+          <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 16 }}>Items in Your Basket</h3>
           {items.map((item, idx) => (
             <div
               key={idx}
@@ -158,7 +158,7 @@ export default function OrderPage() {
 
       {/* Shipping address card */}
       <div className="card" style={{ padding: 24, marginBottom: 20 }}>
-        <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 16 }}>Shipping Address</h3>
+        <h3 style={{ marginTop: 0, marginBottom: 12, fontSize: 16 }}>Delivery Address</h3>
         <div style={{ color: 'var(--white)', lineHeight: 1.6 }}>
           <div style={{ fontWeight: 600, marginBottom: 4 }}>{order.shipping_name}</div>
           <div>{order.shipping_address}</div>
