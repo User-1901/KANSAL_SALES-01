@@ -3,7 +3,7 @@ services:
     name: zenith-atelier-backend
     env: node
     buildCommand: npm ci --include=dev && npm run build:backend
-    startCommand: cd backend && node dist/index.js
+    startCommand: cd backend && node dist/backend/src/index.js
     envVars:
       - key: NODE_ENV
         value: production
