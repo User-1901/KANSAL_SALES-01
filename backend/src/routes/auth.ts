@@ -24,6 +24,12 @@ const authRateLimit = rateLimit({
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // SECURITY: bcrypt salt rounds - higher = more secure but slower (10 is standard)
 const SALT_ROUNDS = 10;
+const authCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' as const : 'strict' as const,
+  maxAge: 24 * 60 * 60 * 1000,
+};
 
 // ── POST /register - Create new user account ───────────────────────────────────
 // SECURITY: Validates input, checks for duplicates, hashes password with bcrypt
@@ -120,12 +126,7 @@ router.post('/login', authRateLimit, async (req: Request, res: Response) => {
   // - httpOnly: Can't be accessed from JavaScript (prevents XSS theft)
   // - secure: Only sent over HTTPS (prevents man-in-the-middle)
   // - sameSite: Strict (prevents CSRF attacks)
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-  });
+  res.cookie('token', token, authCookieOptions);
 
   res.status(200).json({
     user: {
@@ -141,11 +142,7 @@ router.post('/login', authRateLimit, async (req: Request, res: Response) => {
 // Clears the JWT cookie to end user session
 router.post('/logout', (_req: Request, res: Response) => {
   // Clear the token cookie with same security settings as login
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-  });
+  res.clearCookie('token', authCookieOptions);
   res.status(200).json({ message: 'Logged out successfully' });
 });
 
