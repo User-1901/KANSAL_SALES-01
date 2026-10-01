@@ -25,6 +25,14 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 const app = express();
 
+const configuredClientOrigin = process.env.CLIENT_ORIGIN ?? 'http://localhost:5173';
+let clientOrigin = configuredClientOrigin;
+try {
+  clientOrigin = new URL(configuredClientOrigin).origin;
+} catch {
+  console.warn(`[CORS] Invalid CLIENT_ORIGIN: ${configuredClientOrigin}`);
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 // SECURITY MIDDLEWARE - Protect against common web vulnerabilities
 // ──────────────────────────────────────────────────────────────────────────────
@@ -35,7 +43,7 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // CORS: Enable cross-origin requests from frontend
 // SECURITY: Restrict to frontend origin only in production (set CLIENT_ORIGIN env var)
-app.use(cors({ origin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: clientOrigin, credentials: true }));
 
 // Body parsing: Convert JSON/form data to JavaScript objects
 app.use(express.json());

@@ -68,7 +68,7 @@ const ProductDetailPage: React.FC = () => {
 
         // API Call: Load ratings for this product.
         try {
-          const reviewsResponse = await axios.get(`/api/ratings/${id}`);
+          const reviewsResponse = await axios.get(`/api/ratings/${id}/stats`);
           setReviews(reviewsResponse.data || []);
         } catch {
           // If reviews endpoint fails, just continue without reviews
