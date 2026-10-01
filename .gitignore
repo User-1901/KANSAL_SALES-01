@@ -22,6 +22,8 @@ pgdata/
 **/pgdata/
 uploads/
 **/uploads/
+!frontend/public/uploads/
+!frontend/public/uploads/logo.jpeg
 
 # Logs
 *.log
