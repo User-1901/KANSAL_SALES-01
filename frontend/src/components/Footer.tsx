@@ -24,6 +24,19 @@ export default function Footer() {
             ))}
           </nav>
         </div>
+        <div>
+          <h2 style={{ margin: '0 0 12px', color: 'var(--gold)', fontSize: 16 }}>Contact</h2>
+          <address style={{ margin: 0, color: '#D7E6F4', fontSize: 13, fontStyle: 'normal', lineHeight: 1.6 }}>
+            Shop - 16, G. F., Shalimar Enclave, Dhakoli, Zirakpur,<br />
+            SAS Nagar Mohali - 160104, Punjab
+          </address>
+          <a href="mailto:aradhyastoredhakoli@gmail.com" style={{ display: 'block', marginTop: 7, color: '#FFFFFF', fontSize: 13 }}>
+            aradhyastoredhakoli@gmail.com
+          </a>
+          <a href="tel:9988997117" style={{ display: 'block', marginTop: 4, color: '#FFFFFF', fontSize: 13 }}>
+            Phone / WhatsApp: 9988997117
+          </a>
+        </div>
       </div>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '12px 24px 20px', borderTop: '1px solid rgba(255,255,255,0.16)', color: '#D7E6F4', fontSize: 12 }}>
         © {new Date().getFullYear()} Kansal Sales
