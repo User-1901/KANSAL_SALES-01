@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 // ── IMPORT PUBLIC PAGES AND COMPONENTS ──────────────────────────────────────
 // Pages that all users can see (customers)
 import NavBar from './components/NavBar';              // Top navigation bar
+import Footer from './components/Footer';              // Public site footer
 import HomePage from './pages/HomePage';              // Landing page with featured products
 import ProductsPage from './pages/ProductsPage';      // Browse all products
 import ProductDetailPage from './pages/ProductDetailPage';  // Single product details
@@ -16,6 +17,10 @@ import CheckoutPage from './pages/CheckoutPage';      // Payment/checkout page
 import OrderPage from './pages/OrderPage';            // Order confirmation page
 import ForgotPasswordPage from './pages/ForgotPasswordPage';  // Forgot password
 import ResetPasswordPage from './pages/ResetPasswordPage';    // Reset password with token
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import RefundPolicyPage from './pages/RefundPolicyPage';
+import ShippingPolicyPage from './pages/ShippingPolicyPage';
 
 // ── IMPORT ADMIN PAGES ──────────────────────────────────────────────────────
 // Admin panel - separate from customer site
@@ -54,7 +59,12 @@ function App() {
                   <Route path="orders/:orderId" element={<OrderPage />} />         {/* /orders/[ID] → Order confirmation */}
                   <Route path="forgot-password" element={<ForgotPasswordPage />} /> {/* /forgot-password → Reset password request */}
                   <Route path="reset-password" element={<ResetPasswordPage />} />  {/* /reset-password → Actually reset password */}
+                  <Route path="terms" element={<TermsPage />} />
+                  <Route path="privacy" element={<PrivacyPage />} />
+                  <Route path="refund-policy" element={<RefundPolicyPage />} />
+                  <Route path="shipping-policy" element={<ShippingPolicyPage />} />
                 </Routes>
+                <Footer />
               </>
             }
           />

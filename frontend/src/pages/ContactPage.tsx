@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import api from '../api/axios';
 
 // ── CONTACT FORM ERRORS ─────────────────────────────────────────────────────
@@ -16,6 +16,18 @@ interface FieldErrors {
 // Also displays link to join Telegram community
 
 export default function ContactPage() {
+  useEffect(() => {
+    document.title = 'Contact Us | Kansal Sales';
+    const description = 'Contact Kansal Sales about groceries, delivery, and orders.';
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'description');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', description);
+  }, []);
+
   // ── FORM INPUT STATE ────────────────────────────────────────────────────
   const [name, setName] = useState('');           // User's name
   const [email, setEmail] = useState('');         // User's email
@@ -85,6 +97,13 @@ export default function ContactPage() {
       <p style={{ color: 'var(--white)', marginTop: 0, marginBottom: 24 }}>
         Our support team can help with products, delivery areas and order updates.
       </p>
+
+      <div className="card" style={{ padding: '16px 20px', marginBottom: 28 }}>
+        <h2 style={{ marginTop: 0, fontSize: 18 }}>Contact details</h2>
+        <p style={{ margin: '6px 0', color: 'var(--white)' }}>Address: Shop - 16, G. F., Shalimar Enclave, Dhakoli, Zirakpur, SAS Nagar Mohali - 160104, Punjab</p>
+        <p style={{ margin: '6px 0', color: 'var(--white)' }}>Email: <a href="mailto:aradhyastoredhakoli@gmail.com">aradhyastoredhakoli@gmail.com</a></p>
+        <p style={{ margin: '6px 0 0', color: 'var(--white)' }}>Phone / WhatsApp: <a href="tel:9988997117">9988997117</a></p>
+      </div>
 
       {/* Community link card */}
       <div
