@@ -44,6 +44,7 @@ const ProductDetailPage: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);  // Stores the product data
   const [reviews, setReviews] = useState<Review[]>([]);          // Stores product reviews
   const [quantity, setQuantity] = useState(1);                   // How many items user wants to add
+  const [inCart, setInCart] = useState(false);
   const [loading, setLoading] = useState(true);                  // Shows loading spinner while fetching
   const [error, setError] = useState<string | null>(null);       // Stores error messages
 
@@ -89,15 +90,16 @@ const ProductDetailPage: React.FC = () => {
 
   // ── ADD TO CART HANDLER ─────────────────────────────────────────────────
   // Handles adding the selected quantity of product to the user's cart
-  const handleAddToCart = async () => {
+  const updateCartQuantity = async (nextQuantity: number) => {
     if (!product) return;
+    if (nextQuantity < 1 || nextQuantity > product.quantity_available) return;
 
     try {
       if (user) {
         // Logged-in user: Add item to database cart via API
         await axios.post('/api/cart/items', {
           productId: product.id,
-          quantity: quantity,
+          quantity: nextQuantity,
         });
         // Update cart count in the app header
         setCartCount(cartCount + quantity);
@@ -111,14 +113,14 @@ const ProductDetailPage: React.FC = () => {
         const existing = cart.find((i) => i.productId === product.id);
         if (existing) {
           // If product exists, increase quantity
-          existing.quantity += quantity;
+          existing.quantity = nextQuantity;
         } else {
           // If new product, add it to cart
           cart.push({
             productId: product.id,
             name: product.name,
             price: product.price,
-            quantity: quantity,
+            quantity: nextQuantity,
           });
         }
         // Save updated cart back to sessionStorage
@@ -127,14 +129,18 @@ const ProductDetailPage: React.FC = () => {
         setCartCount(cartCount + quantity);
       }
 
-      // Show success message and reset quantity selector
-      alert('Product added to cart!');
-      setQuantity(1);
+      setCartCount(cartCount + (nextQuantity - (inCart ? quantity : 0)));
+      setQuantity(nextQuantity);
+      setInCart(true);
     } catch (err) {
       // Handle any errors during add to cart operation
       console.error('Error adding to cart:', err);
       alert('Failed to add to cart');
     }
+  };
+
+  const handleAddToCart = () => {
+    void updateCartQuantity(1);
   };
 
   // ── LOADING STATE ───────────────────────────────────────────────────────
@@ -206,38 +212,37 @@ const ProductDetailPage: React.FC = () => {
           )}
         </div>
 
-        {/* Quantity Selector and Add to Cart */}
+        {/* Add immediately, then adjust quantity with live controls */}
         <div className="add-to-cart-section">
-          <div className="quantity-selector">
+          {!inCart ? (
             <button
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              onClick={handleAddToCart}
+              className="add-to-cart-btn"
+              disabled={product.stock_status !== 'in_stock'}
+            >
+              Add to Basket
+            </button>
+          ) : (
+            <div className="quantity-selector" aria-label="Basket quantity">
+            <button
+              onClick={() => void updateCartQuantity(quantity - 1)}
               className="qty-btn"
+              disabled={quantity <= 1}
+              aria-label="Decrease quantity"
             >
               −
             </button>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-              min="1"
-              max={product.quantity_available}
-              className="qty-input"
-            />
+            <span className="qty-input" aria-live="polite">{quantity}</span>
             <button
-              onClick={() => setQuantity(Math.min(product.quantity_available, quantity + 1))}
+              onClick={() => void updateCartQuantity(quantity + 1)}
               className="qty-btn"
+              disabled={quantity >= product.quantity_available}
+              aria-label="Increase quantity"
             >
               +
             </button>
-          </div>
-
-          <button
-            onClick={handleAddToCart}
-            className="add-to-cart-btn"
-            disabled={product.stock_status !== 'in_stock'}
-          >
-            Add to Basket
-          </button>
+            </div>
+          )}
         </div>
 
         {/* Why Shop With Us Section */}

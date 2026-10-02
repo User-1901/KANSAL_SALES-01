@@ -140,6 +140,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .btn-primary:hover { 
   background: var(--gold-light); 
+  color: var(--dark);
   transform: translateY(-2px); 
   box-shadow: 0 6px 20px rgba(212,175,55,0.4);
 }
@@ -153,7 +154,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-secondary:hover { 
   background: var(--dark-tertiary);
   border-color: var(--gold);
-  color: var(--gold);
+  color: var(--light-text);
 }
 
 /* Danger: Red alert */
@@ -163,6 +164,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .btn-danger:hover { 
   background: var(--error-dark);
+  color: var(--white);
   box-shadow: 0 4px 12px rgba(255,107,107,0.3);
 }
 
@@ -174,6 +176,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .btn-outline:hover { 
   background: rgba(212,175,55,0.1); 
+  color: var(--gold);
   box-shadow: 0 4px 12px rgba(212,175,55,0.2);
 }
 

@@ -136,7 +136,7 @@ export default function NavBar() {
             (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.color = 'var(--light-text)';
+            (e.currentTarget as HTMLAnchorElement).style.color = '#FFFFFF';
             (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent';
           }}
           onClick={() => setMenuOpen(false)}

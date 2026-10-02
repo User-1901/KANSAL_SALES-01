@@ -24,7 +24,7 @@ interface Props {
 // ── PRODUCT CARD COMPONENT ──────────────────────────────────────────────────
 // Reusable card showing a single product with image, name, price, stock status
 // Clicking on product navigates to detail page (/products/:id)
-// Clicking "Add to Cart" shows quantity selector then adds to user/guest cart
+// Clicking "Add to Cart" immediately adds one item and reveals quantity controls
 
 export default function ProductCard({ product }: Props) {
   // ── ROUTING & AUTHENTICATION CONTEXT ────────────────────────────────────
@@ -32,79 +32,52 @@ export default function ProductCard({ product }: Props) {
   const { user, cartCount, setCartCount } = useAuth();   // Current user & cart info
 
   // ── QUANTITY SELECTOR STATE ─────────────────────────────────────────────
-  // Initially hidden, shows when user clicks "Add to Cart"
+  // Hidden until the first item is added
   const [showQuantitySelector, setShowQuantitySelector] = useState(false);  // Show/hide counter
   const [selectedQuantity, setSelectedQuantity] = useState(1);  // How many to add (1-max available)
 
-  // ── SHOW/HIDE QUANTITY SELECTOR UI ──────────────────────────────────────
-  function openQuantitySelector() {
-    setShowQuantitySelector(true);
-    setSelectedQuantity(1);  // Reset to 1 when opening
-  }
-
-  function closeQuantitySelector() {
-    setShowQuantitySelector(false);
-    setSelectedQuantity(1);  // Reset to 1 when closing without adding
-  }
-
-  // ── QUANTITY BUTTONS (+/-) ──────────────────────────────────────────────
-  // Increase quantity (max = quantityAvailable)
   function increaseQuantity() {
-    const maxAvailable = product.quantityAvailable || 1;
-    if (selectedQuantity < maxAvailable) {
-      setSelectedQuantity(selectedQuantity + 1);
-    }
+    void setProductQuantity(selectedQuantity + 1);
   }
 
-  // Decrease quantity (min = 1)
   function decreaseQuantity() {
-    if (selectedQuantity > 1) {
-      setSelectedQuantity(selectedQuantity - 1);
-    }
+    void setProductQuantity(selectedQuantity - 1);
   }
 
   // ── ADD TO CART HANDLER ─────────────────────────────────────────────────
-  // Branches based on whether user is logged in or guest
-  async function handleAddToCart() {
+  // Persists the complete quantity so plus/minus changes do not need confirmation.
+  async function setProductQuantity(nextQuantity: number) {
+    if (nextQuantity < 1 || nextQuantity > (product.quantityAvailable || 1)) return;
+
     if (user) {
-      // ── LOGGED-IN USER: Save to database via API ──
       try {
-        // POST to backend: add selected quantity to user's cart
-        await api.post('/api/cart/items', { productId: product.id, quantity: selectedQuantity });
-        // Update cart count in header/navbar
-        setCartCount(cartCount + selectedQuantity);
+        await api.post('/api/cart/items', { productId: product.id, quantity: nextQuantity });
       } catch {
-        // If API call fails, don't show error (could add toast notification later)
+        return;
       }
     } else {
-      // ── GUEST USER: Save to browser sessionStorage ──
-      // Get existing guest cart from sessionStorage (or empty array if none)
       const raw = sessionStorage.getItem('guestCart');
       const cart: Array<{ productId: string; name: string; price: string; quantity: number }> =
         raw ? JSON.parse(raw) : [];
-      
-      // Check if product already in cart
       const existing = cart.find((i) => i.productId === product.id);
-      
       if (existing) {
-        // Product exists: increase quantity
-        existing.quantity += selectedQuantity;
+        existing.quantity = nextQuantity;
       } else {
-        // New product: add to cart with initial quantity
-        cart.push({ productId: product.id, name: product.name, price: product.price, quantity: selectedQuantity });
+        cart.push({ productId: product.id, name: product.name, price: product.price, quantity: nextQuantity });
       }
-      
-      // Save updated cart back to sessionStorage
       sessionStorage.setItem('guestCart', JSON.stringify(cart));
-      // Update cart count in header
-      setCartCount(cartCount + selectedQuantity);
     }
-    
-    // Hide quantity selector after adding
-    closeQuantitySelector();
+
+    setSelectedQuantity(nextQuantity);
+    setShowQuantitySelector(true);
+    setCartCount(cartCount + (nextQuantity - (showQuantitySelector ? selectedQuantity : 0)));
   }
 
-  // ── DISPLAY STATE ───────────────────────────────────────────────────────
+  function handleAddToCart() {
+    void setProductQuantity(1);
+  }
+
+  // Add the first item immediately; quantity controls appear afterward.
   const inStock = product.stockStatus === 'in_stock';
 
   // ── RENDER PRODUCT CARD ─────────────────────────────────────────────────
@@ -166,13 +139,13 @@ export default function ProductCard({ product }: Props) {
           <button
             className="btn btn-primary"
             style={{ marginTop: 'auto', paddingTop: 8, paddingBottom: 8 }}
-            onClick={openQuantitySelector}
+            onClick={handleAddToCart}
             disabled={!inStock}  // Disable button if product is out of stock
           >
             Add to Basket
           </button>
         ) : (
-          // ── QUANTITY SELECTOR STATE: Counter + Add/Cancel buttons ──
+          // ── QUANTITY SELECTOR STATE: Live quantity controls ──
           <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
             
             {/* Quantity selector UI */}
@@ -241,31 +214,6 @@ export default function ProductCard({ product }: Props) {
               </button>
             </div>
 
-            {/* Action buttons: Confirm Add or Cancel */}
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button
-                className="btn btn-primary"
-                onClick={handleAddToCart}
-                style={{ flex: 1, paddingTop: 8, paddingBottom: 8, fontSize: 14 }}
-              >
-                Add {selectedQuantity} to Cart
-              </button>
-              <button
-                onClick={closeQuantitySelector}
-                style={{
-                  padding: '8px 12px',
-                  background: '#e2e8f0',
-                  color: 'var(--white)',
-                  border: '1px solid #cbd5e1',
-                  borderRadius: 4,
-                  fontWeight: 600,
-                  fontSize: 12,
-                  cursor: 'pointer',
-                }}
-              >
-                Cancel
-              </button>
-            </div>
           </div>
         )}
       </div>
